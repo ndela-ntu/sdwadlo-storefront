@@ -23,6 +23,7 @@ const navItems: NavItem[] = [
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<IProduct[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -58,11 +59,14 @@ const Navbar = () => {
       if (isSearchOpen && !(event.target as Element).closest(".search-panel")) {
         setIsSearchOpen(false);
       }
+      if (isCartOpen && !(event.target as Element).closest(".cart-panel")) {
+        setIsCartOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMenuOpen, isSearchOpen]);
+  }, [isMenuOpen, isSearchOpen, isCartOpen]);
 
   // Add scroll effect
   useEffect(() => {
@@ -141,13 +145,73 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Main Navbar */}
+      {/* Cart Panel - slides from right */}
+      <div
+        className={`cart-panel fixed top-0 right-0 h-full w-full sm:w-96 bg-white z-[60] transition-all duration-300 ease-in-out shadow-xl ${
+          isCartOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="relative h-full flex flex-col">
+          {/* Cart Header */}
+          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 className="text-xl font-bold">Your Cart</h2>
+            <button
+              onClick={() => setIsCartOpen(false)}
+              className="p-1 rounded-full hover:bg-gray-100"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          {/* Cart Content */}
+          <div className="flex-1 p-4 overflow-y-auto">
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <ShoppingCart size={48} className="text-gray-300 mb-4" />
+              <h3 className="text-xl font-medium text-gray-700 mb-2">
+                Your cart is empty
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Looks like you haven't added any items to your cart yet.
+              </p>
+              <Link
+                href="/products"
+                onClick={() => setIsCartOpen(false)}
+                className="px-6 py-2 bg-chest-nut text-white rounded-md hover:bg-chest-nut/90 transition"
+              >
+                Continue Shopping
+              </Link>
+            </div>
+          </div>
+
+          {/* Cart Footer (will be useful when cart has items) */}
+          <div className="border-t border-gray-200 p-4">
+            <div className="flex justify-between items-center mb-4">
+              <span className="font-medium">Subtotal</span>
+              <span className="font-bold">R0.00</span>
+            </div>
+            <button
+              disabled
+              className="w-full py-3 bg-gray-300 text-white rounded-md cursor-not-allowed"
+            >
+              Checkout
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {isCartOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50"
+          onClick={() => setIsCartOpen(false)}
+        />
+      )}
+
       <nav
         className={`fixed w-full z-50 transition-all duration-300 ${
           isScrolled ? "bg-white shadow-md py-2" : "bg-white/90 py-4"
         }`}
       >
-        <div className="px-4 md:px-8 lg:px-16 flex justify-between items-center">
+         <div className="px-4 md:px-8 lg:px-16 flex justify-between items-center">
           <div className="flex items-center">
             <Link href="/">
               <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
@@ -174,7 +238,7 @@ const Navbar = () => {
             <button onClick={() => setIsSearchOpen(!isSearchOpen)}>
               <Search />
             </button>
-            <button>
+            <button onClick={() => setIsCartOpen(!isCartOpen)}>
               <ShoppingCart />
             </button>
             <button
