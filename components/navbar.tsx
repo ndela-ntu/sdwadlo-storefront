@@ -211,7 +211,7 @@ const Navbar = () => {
           isScrolled ? "bg-white shadow-md py-2" : "bg-white/90 py-4"
         }`}
       >
-         <div className="px-4 md:px-8 lg:px-16 flex justify-between items-center">
+        <div className="px-4 md:px-8 lg:px-16 flex justify-between items-center">
           <div className="flex items-center">
             <Link href="/">
               <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
