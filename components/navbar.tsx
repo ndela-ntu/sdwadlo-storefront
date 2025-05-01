@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import { ChevronDown, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import IProduct from "@/models/product";
 import { searchProducts } from "@/utils/search-products";
 
@@ -259,19 +259,40 @@ const Navbar = () => {
               <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
                 SDWADLO.CO
               </h1>
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  className={`transition hover:text-chest-nut max-w-fit ${
-                    isActive(item.href) &&
-                    "border-b-4 border-chest-nut text-chest-nut font-bold"
-                  }`}
-                  href={item.href}
-                  onClick={handleLinkClick}
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                if (item.name === "Brands" || item.name === "Apparel" || item.name === "Collections") {
+                  return (
+                    <Link
+                      key={item.name}
+                      className={`flex space-x-2 items-center transition hover:text-chest-nut max-w-fit ${
+                        isActive(item.href) &&
+                        "border-b-4 border-chest-nut text-chest-nut font-bold"
+                      }`}
+                      href={item.href}
+                      onClick={handleLinkClick}
+                    >
+                      <span>{item.name}</span>
+                      <span>
+                        <ChevronDown className="h-4 w-4" />
+                      </span>
+                    </Link>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={item.name}
+                    className={`transition hover:text-chest-nut max-w-fit ${
+                      isActive(item.href) &&
+                      "border-b-4 border-chest-nut text-chest-nut font-bold"
+                    }`}
+                    href={item.href}
+                    onClick={handleLinkClick}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
