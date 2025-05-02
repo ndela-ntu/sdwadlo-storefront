@@ -3,21 +3,33 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import IProduct from "@/models/product";
 import { searchProducts } from "@/utils/search-products";
+import IBrand from "@/models/brand";
+import ICategory from "@/models/category";
+import ITag from "@/models/tag";
+import { supabase } from "@/utils/supabase";
+import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 interface NavItem {
   name: string;
-  href: string;
+  href?: string;
 }
 
 const navItems: NavItem[] = [
   { name: "Home", href: "/" },
-  { name: "Brands", href: "/brands" },
-  { name: "Apparel", href: "/apparel" },
+  { name: "Brands" },
+  { name: "Categories" },
   { name: "Accessories", href: "/accessories" },
-  { name: "Collections", href: "/collections" },
+  { name: "Collections" },
 ];
 
 const Navbar = () => {
@@ -29,9 +41,26 @@ const Navbar = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+  const [brands, setBrands] = useState<IBrand[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [tags, setTags] = useState<ITag[]>([]);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const handleLinkClick = () => {
     if (isMenuOpen) setIsMenuOpen(false);
+  };
+
+  const toggleSection = (sectionName: string) => {
+    if (expandedSection === sectionName) {
+      setExpandedSection(null);
+    } else {
+      setExpandedSection(sectionName);
+    }
+  };
+
+  const handleDropdownOpenChange = (name: string, isOpen: boolean) => {
+    setOpenDropdown(isOpen ? name : null);
   };
 
   // Handle search input changes with debounce
@@ -82,8 +111,149 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: brands, error: brandsError } = await supabase
+        .from("brand")
+        .select("*");
+
+      const { data: categories, error: categoriesError } = await supabase
+        .from("category")
+        .select("*");
+
+      const { data: tags, error: tagsError } = await supabase
+        .from("tag")
+        .select("*");
+
+      if (brandsError || categoriesError || tagsError) {
+        toast("Error occurred", {
+          description: `Error message: ${
+            brandsError?.message ||
+            categoriesError?.message ||
+            tagsError?.message
+          }`,
+        });
+      } else {
+        setBrands(brands);
+        setCategories(categories);
+        setTags(tags);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const isActive = (href: string): boolean => {
     return pathname === href;
+  };
+
+  const renderMobileSection = (itemName: string) => {
+    switch (itemName) {
+      case "Brands":
+        return (
+          <div className="w-full">
+            <button
+              className="flex items-center justify-between w-full py-2"
+              onClick={() => toggleSection("brands")}
+            >
+              <span>{itemName}</span>
+              {expandedSection === "brands" ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </button>
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                expandedSection === "brands" ? "max-h-96" : "max-h-0"
+              }`}
+            >
+              <div className="pl-2 py-2 space-y-2 text-sm">
+                {brands.map((brand) => (
+                  <Link
+                    key={brand.id}
+                    href={`/brands/${brand.id}`}
+                    className="block py-1 hover:text-chest-nut transition"
+                    onClick={handleLinkClick}
+                  >
+                    {brand.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      case "Categories":
+        return (
+          <div className="w-full">
+            <button
+              className="flex items-center justify-between w-full py-2"
+              onClick={() => toggleSection("categories")}
+            >
+              <span>{itemName}</span>
+              {expandedSection === "categories" ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </button>
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                expandedSection === "categories" ? "max-h-96" : "max-h-0"
+              }`}
+            >
+              <div className="pl-2 py-2 space-y-2 text-sm">
+                {categories.map((category) => (
+                  <Link
+                    key={category.id}
+                    href={`/categories/${category.id}`}
+                    className="block py-1 hover:text-chest-nut transition"
+                    onClick={handleLinkClick}
+                  >
+                    {category.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      case "Collections":
+        return (
+          <div className="w-full">
+            <button
+              className="flex items-center justify-between w-full py-2"
+              onClick={() => toggleSection("collections")}
+            >
+              <span>{itemName}</span>
+              {expandedSection === "collections" ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </button>
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                expandedSection === "collections" ? "max-h-96" : "max-h-0"
+              }`}
+            >
+              <div className="pl-2 py-2 space-y-2 text-sm">
+                {tags.map((tag) => (
+                  <Link
+                    key={tag.id}
+                    href={`/collections/${tag.id}`}
+                    className="block py-1 hover:text-chest-nut transition"
+                    onClick={handleLinkClick}
+                  >
+                    {tag.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -132,7 +302,6 @@ const Navbar = () => {
                     }}
                   >
                     <h4 className="font-medium">{product.name}</h4>
-                    {/* Add more product details as needed */}
                   </Link>
                 ))}
               </div>
@@ -152,7 +321,6 @@ const Navbar = () => {
         }`}
       >
         <div className="relative h-full flex flex-col">
-          {/* Cart Header */}
           <div className="p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-xl font-bold">Your Cart</h2>
             <button
@@ -163,7 +331,6 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Cart Content */}
           <div className="flex-1 p-4 overflow-y-auto">
             <div className="flex flex-col items-center justify-center h-full text-center">
               <ShoppingCart size={48} className="text-gray-300 mb-4" />
@@ -183,7 +350,6 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Cart Footer (will be useful when cart has items) */}
           <div className="border-t border-gray-200 p-4">
             <div className="flex justify-between items-center mb-4">
               <span className="font-medium">Subtotal</span>
@@ -218,19 +384,79 @@ const Navbar = () => {
                 SDWADLO.CO
               </h1>
             </Link>
-            <div className="hidden md:flex space-x-8 md:ml-8 md:text-lg">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  className={`transition hover:text-chest-nut ${
-                    isActive(item.href) &&
-                    "border-b-4 border-chest-nut text-chest-nut font-bold"
-                  }`}
-                  href={item.href}
-                >
-                  {item.name}
-                </Link>
-              ))}
+            <div className="hidden md:flex md:items-center space-x-8 md:ml-8 md:text-lg">
+              {navItems.map((item) => {
+                if (item.href) {
+                  return (
+                    <Link
+                      key={item.name}
+                      className={`transition hover:text-chest-nut ${
+                        isActive(item.href) &&
+                        "border-b-4 border-chest-nut text-chest-nut font-bold"
+                      }`}
+                      href={item.href}
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                } else {
+                  return (
+                    <DropdownMenu 
+                      key={item.name}
+                      onOpenChange={(isOpen) => handleDropdownOpenChange(item.name, isOpen)}
+                    >
+                      <DropdownMenuTrigger className="flex items-center space-x-2 focus:outline-none">
+                        <span className="transition hover:text-chest-nut">
+                          {item.name}
+                        </span>
+                        {openDropdown === item.name ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-48 max-h-[60vh] overflow-y-auto">
+                        {item.name === "Brands" && (
+                          <>
+                            <DropdownMenuLabel>Shop by Brand</DropdownMenuLabel>
+                            {brands.map((brand) => (
+                              <DropdownMenuItem key={brand.id} asChild>
+                                <Link href={`/brands/${brand.id}`}>
+                                  {brand.name}
+                                </Link>
+                              </DropdownMenuItem>
+                            ))}
+                          </>
+                        )}
+                        {item.name === "Categories" && (
+                          <>
+                            <DropdownMenuLabel>Shop by Category</DropdownMenuLabel>
+                            {categories.map((category) => (
+                              <DropdownMenuItem key={category.id} asChild>
+                                <Link href={`/categories/${category.id}`}>
+                                  {category.name}
+                                </Link>
+                              </DropdownMenuItem>
+                            ))}
+                          </>
+                        )}
+                        {item.name === "Collections" && (
+                          <>
+                            <DropdownMenuLabel>Shop Collections</DropdownMenuLabel>
+                            {tags.map((tag) => (
+                              <DropdownMenuItem key={tag.id} asChild>
+                                <Link href={`/collections/${tag.id}`}>
+                                  {tag.name}
+                                </Link>
+                              </DropdownMenuItem>
+                            ))}
+                          </>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  );
+                }
+              })}
             </div>
           </div>
 
@@ -249,49 +475,38 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Mobile Menu (unchanged) */}
+          {/* Mobile Menu */}
           <div
             className={`mobile-menu fixed inset-y-0 left-0 w-64 bg-white transform ${
               isMenuOpen ? "translate-x-0" : "-translate-x-full"
-            } md:hidden transition-transform duration-300 ease-in-out z-50`}
+            } md:hidden transition-transform duration-300 ease-in-out z-50 overflow-y-auto`}
           >
             <div className="flex flex-col p-4 space-y-4 mt-8">
               <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
                 SDWADLO.CO
               </h1>
               {navItems.map((item) => {
-                if (item.name === "Brands" || item.name === "Apparel" || item.name === "Collections") {
+                if (item.href) {
                   return (
                     <Link
                       key={item.name}
-                      className={`flex space-x-2 items-center transition hover:text-chest-nut max-w-fit ${
+                      className={`transition hover:text-chest-nut max-w-fit ${
                         isActive(item.href) &&
                         "border-b-4 border-chest-nut text-chest-nut font-bold"
                       }`}
                       href={item.href}
                       onClick={handleLinkClick}
                     >
-                      <span>{item.name}</span>
-                      <span>
-                        <ChevronDown className="h-4 w-4" />
-                      </span>
+                      {item.name}
                     </Link>
                   );
+                } else {
+                  return (
+                    <div key={item.name} className="w-full">
+                      {renderMobileSection(item.name)}
+                    </div>
+                  );
                 }
-
-                return (
-                  <Link
-                    key={item.name}
-                    className={`transition hover:text-chest-nut max-w-fit ${
-                      isActive(item.href) &&
-                      "border-b-4 border-chest-nut text-chest-nut font-bold"
-                    }`}
-                    href={item.href}
-                    onClick={handleLinkClick}
-                  >
-                    {item.name}
-                  </Link>
-                );
               })}
             </div>
           </div>
