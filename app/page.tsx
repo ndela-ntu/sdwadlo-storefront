@@ -24,7 +24,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col p-2.5 space-y-2.5">
+    <div className="flex flex-col pb-2.5 space-y-2.5">
       <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-eerie-black text-white">
         <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
           Shop by Category
@@ -35,6 +35,7 @@ export default async function Home() {
           ))}
         </div>
       </div>
+      <div className="border-1 md:border-2 border-b-black" />
       <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 ">
         <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
           Featured Brands
@@ -45,6 +46,7 @@ export default async function Home() {
           ))}
         </div>
       </div>
+      <div className="border-1 md:border-2 border-b-black" />
       <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-eerie-black text-white">
         <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
           Collections
