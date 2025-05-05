@@ -14,11 +14,20 @@ export default async function Home() {
   const { data: tags, error: tagsError } = await supabase
     .from("tag")
     .select("*");
+  const { data: products, error: productsError } = await supabase.from(
+    "product"
+  ).select(`
+      *,
+      product_variant (*)
+    `);
 
-  if (brandsError || categoriesError || tagsError) {
+  if (brandsError || categoriesError || tagsError || productsError) {
     return (
       <div>{`An error occurred: ${
-        brandsError?.message || categoriesError?.message || tagsError?.message
+        brandsError?.message ||
+        categoriesError?.message ||
+        tagsError?.message ||
+        productsError?.message
       }`}</div>
     );
   }
