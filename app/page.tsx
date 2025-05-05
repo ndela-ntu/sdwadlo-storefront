@@ -26,8 +26,18 @@ export default async function Home() {
   return (
     <div className="flex flex-col p-2.5 space-y-2.5">
       <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-eerie-black text-white">
-        <span className="text-xl md:text-2xl font-bold pb-2.5 md:pb-5 underline">
-          Shop by Brand
+        <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
+          Shop by Category
+        </span>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
+          {categories.map((category) => (
+            <ItemsCard key={category.id} item={category} />
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 ">
+        <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
+          Featured Brands
         </span>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
           {brands.map((brand) => (
@@ -35,21 +45,11 @@ export default async function Home() {
           ))}
         </div>
       </div>
-      <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5">
-        <span className="text-xl md:text-2xl font-bold pb-2.5 md:pb-5 underline">
-          Shop by Category
-        </span>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
-          {categories.map((category) => (
-            <ItemsCard key={category.id} item={category} />
-          ))}
-        </div>
-      </div>
       <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-eerie-black text-white">
-        <span className="text-xl md:text-2xl font-bold pb-2.5 md:pb-5 underline">
-          Shop by Collection
+        <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
+          Collections
         </span>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
           {tags.map((tag) => (
             <ItemsCard key={tag.id} item={tag} />
           ))}
