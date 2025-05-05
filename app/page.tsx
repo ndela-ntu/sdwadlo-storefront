@@ -25,7 +25,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col p-2.5 space-y-2.5">
-      <div className="flex flex-col px-2.5 md:px-5">
+      <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-eerie-black text-white">
         <span className="text-xl md:text-2xl font-bold pb-2.5 md:pb-5 underline">
           Shop by Brand
         </span>
@@ -35,7 +35,7 @@ export default async function Home() {
           ))}
         </div>
       </div>
-      <div className="flex flex-col bg-eerie-black text-white py-2.5 px-2.5 md:py-5 md:px-5">
+      <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5">
         <span className="text-xl md:text-2xl font-bold pb-2.5 md:pb-5 underline">
           Shop by Category
         </span>
@@ -45,7 +45,7 @@ export default async function Home() {
           ))}
         </div>
       </div>
-      <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5">
+      <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-eerie-black text-white">
         <span className="text-xl md:text-2xl font-bold pb-2.5 md:pb-5 underline">
           Shop by Collection
         </span>
