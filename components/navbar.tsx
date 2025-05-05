@@ -3,7 +3,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, ChevronUp, Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Menu,
+  Search,
+  ShoppingCart,
+  User,
+  X,
+} from "lucide-react";
 import IProduct from "@/models/product";
 import { searchProducts } from "@/utils/search-products";
 import IBrand from "@/models/brand";
@@ -18,6 +26,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useNavbarContext } from "@/context/NavbarContext";
 
 interface NavItem {
   name: string;
@@ -46,6 +55,31 @@ const Navbar = () => {
   const [tags, setTags] = useState<ITag[]>([]);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const { dimensions, setDimensions } = useNavbarContext();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setDimensions(
+        isScrolled
+          ? { paddingClass: "pt-12", heightPx: 48 } // Slim mobile scrolled
+          : { paddingClass: "pt-16", heightPx: 64 } // Regular mobile
+      );
+    } else {
+      setDimensions(
+        isScrolled
+          ? { paddingClass: "pt-20", heightPx: 80 } // Slim desktop scrolled
+          : { paddingClass: "pt-24", heightPx: 96 } // Regular desktop
+      );
+    }
+  }, [isScrolled, isMobile]);
 
   const handleLinkClick = () => {
     if (isMenuOpen) setIsMenuOpen(false);
@@ -153,7 +187,7 @@ const Navbar = () => {
         return (
           <div className="w-full">
             <button
-              className="flex items-center justify-between w-full py-2"
+              className="flex items-center justify-between w-full"
               onClick={() => toggleSection("brands")}
             >
               <span>{itemName}</span>
@@ -168,7 +202,7 @@ const Navbar = () => {
                 expandedSection === "brands" ? "max-h-96" : "max-h-0"
               }`}
             >
-              <div className="pl-2 py-2 space-y-2 text-sm">
+              <div className="pl-2 py-2 space-y-2 text-base">
                 {brands.map((brand) => (
                   <Link
                     key={brand.id}
@@ -187,7 +221,7 @@ const Navbar = () => {
         return (
           <div className="w-full">
             <button
-              className="flex items-center justify-between w-full py-2"
+              className="flex items-center justify-between w-full"
               onClick={() => toggleSection("categories")}
             >
               <span>{itemName}</span>
@@ -202,7 +236,7 @@ const Navbar = () => {
                 expandedSection === "categories" ? "max-h-96" : "max-h-0"
               }`}
             >
-              <div className="pl-2 py-2 space-y-2 text-sm">
+              <div className="pl-2 py-2 space-y-2 text-base">
                 {categories.map((category) => (
                   <Link
                     key={category.id}
@@ -221,7 +255,7 @@ const Navbar = () => {
         return (
           <div className="w-full">
             <button
-              className="flex items-center justify-between w-full py-2"
+              className="flex items-center justify-between w-full"
               onClick={() => toggleSection("collections")}
             >
               <span>{itemName}</span>
@@ -236,7 +270,7 @@ const Navbar = () => {
                 expandedSection === "collections" ? "max-h-96" : "max-h-0"
               }`}
             >
-              <div className="pl-2 py-2 space-y-2 text-sm">
+              <div className="pl-2 py-2 space-y-2 text-base">
                 {tags.map((tag) => (
                   <Link
                     key={tag.id}
@@ -376,6 +410,7 @@ const Navbar = () => {
         className={`fixed w-full z-50 transition-all duration-300 ${
           isScrolled ? "bg-white shadow-md py-2" : "bg-white/90 py-4"
         }`}
+        style={{ height: `${dimensions.heightPx}px` }}
       >
         <div className="px-4 md:px-8 lg:px-16 flex justify-between items-center">
           <div className="flex items-center">
@@ -384,7 +419,7 @@ const Navbar = () => {
                 SDWADLO.CO
               </h1>
             </Link>
-            <div className="hidden md:flex md:items-center space-x-8 md:ml-8 md:text-lg">
+            <div className="hidden md:flex md:items-center space-x-8 md:ml-8 md:text-xl">
               {navItems.map((item) => {
                 if (item.href) {
                   return (
@@ -401,9 +436,11 @@ const Navbar = () => {
                   );
                 } else {
                   return (
-                    <DropdownMenu 
+                    <DropdownMenu
                       key={item.name}
-                      onOpenChange={(isOpen) => handleDropdownOpenChange(item.name, isOpen)}
+                      onOpenChange={(isOpen) =>
+                        handleDropdownOpenChange(item.name, isOpen)
+                      }
                     >
                       <DropdownMenuTrigger className="flex items-center space-x-2 focus:outline-none">
                         <span className="transition hover:text-chest-nut">
@@ -430,7 +467,9 @@ const Navbar = () => {
                         )}
                         {item.name === "Categories" && (
                           <>
-                            <DropdownMenuLabel>Shop by Category</DropdownMenuLabel>
+                            <DropdownMenuLabel>
+                              Shop by Category
+                            </DropdownMenuLabel>
                             {categories.map((category) => (
                               <DropdownMenuItem key={category.id} asChild>
                                 <Link href={`/categories/${category.id}`}>
@@ -442,7 +481,9 @@ const Navbar = () => {
                         )}
                         {item.name === "Collections" && (
                           <>
-                            <DropdownMenuLabel>Shop Collections</DropdownMenuLabel>
+                            <DropdownMenuLabel>
+                              Shop Collections
+                            </DropdownMenuLabel>
                             {tags.map((tag) => (
                               <DropdownMenuItem key={tag.id} asChild>
                                 <Link href={`/collections/${tag.id}`}>
@@ -481,7 +522,7 @@ const Navbar = () => {
               isMenuOpen ? "translate-x-0" : "-translate-x-full"
             } md:hidden transition-transform duration-300 ease-in-out z-50 overflow-y-auto`}
           >
-            <div className="flex flex-col p-4 space-y-4 mt-8">
+            <div className="flex flex-col p-2 space-y-4">
               <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
                 SDWADLO.CO
               </h1>
@@ -490,9 +531,9 @@ const Navbar = () => {
                   return (
                     <Link
                       key={item.name}
-                      className={`transition hover:text-chest-nut max-w-fit ${
+                      className={`transition hover:text-chest-nut text-lg max-w-fit ${
                         isActive(item.href) &&
-                        "border-b-4 border-chest-nut text-chest-nut font-bold"
+                        "border-b-2 border-chest-nut text-chest-nut font-bold"
                       }`}
                       href={item.href}
                       onClick={handleLinkClick}
@@ -502,7 +543,7 @@ const Navbar = () => {
                   );
                 } else {
                   return (
-                    <div key={item.name} className="w-full">
+                    <div key={item.name} className="w-full text-lg">
                       {renderMobileSection(item.name)}
                     </div>
                   );
