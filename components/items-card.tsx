@@ -8,7 +8,7 @@ export default function ItemsCard({ item }: { item: ITag | ICategory }) {
 
   return (
     <Link
-      href={`/items/${item.id}`}
+      href={item.type === 'Tag' ? `/collections/${item.id}` : `categories/${item.id}`}
       className="relative block aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 group"
     >
       {/* Media - Takes full card area */}

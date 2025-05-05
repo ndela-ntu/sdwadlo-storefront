@@ -7,7 +7,7 @@ export default function BrandsCard({ brand }: { brand: IBrand }) {
   return (
     <Link
       href={`/brands/${brand.id}`}
-      className="relative block aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 group"
+      className="relative block aspect-square overflow-hidden rounded-none shadow-md hover:shadow-lg transition-shadow duration-300 group"
     >
       {/* Brand Logo - Top Left - Updated for perfect fit */}
       {brand.logo_url && (
@@ -52,7 +52,7 @@ export default function BrandsCard({ brand }: { brand: IBrand }) {
 
       {/* Brand Name - Bottom Left (unchanged) */}
       <div className="absolute bottom-0 left-0 right-0 p-1 bg-gradient-to-t from-black/80 to-transparent">
-        <h3 className="text-white font-bold text-xl">{brand.name}</h3>
+        <h3 className="text-white font-bold text-xl md:text-2xl">{brand.name}</h3>
       </div>
     </Link>
   );
