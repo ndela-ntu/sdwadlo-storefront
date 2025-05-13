@@ -60,9 +60,19 @@ export default async function Home() {
     <div className="flex flex-col pb-2.5 space-y-2.5">
       <div className="flex flex-col md:flex-row space-y-2.5 md:space-x-2.5 md:space-y-none w-full">
         <div className="flex flex-col w-full">
+          <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-eerie-black text-white w-full max-h-fit">
+            <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
+              Shop by Category
+            </span>
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
+              {categories.map((category) => (
+                <ItemsCard key={category.id} item={category} />
+              ))}
+            </div>
+          </div>
           <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 text-black w-full max-h-fit">
             <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
-              Shop Our Proudly Kasi Brands
+              Proudly Kasi Brands
             </span>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
               {products.map((product) => (
@@ -76,18 +86,7 @@ export default async function Home() {
               </span>
             </div>
           </div>
-          <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-eerie-black text-white w-full max-h-fit">
-            <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
-              Shop by Category
-            </span>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
-              {categories.map((category) => (
-                <ItemsCard key={category.id} item={category} />
-              ))}
-            </div>
-          </div>
         </div>
-
         <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-chest-nut text-white max-h-fit md:w-[30%]">
           <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
             Featured Brands
