@@ -9,13 +9,13 @@ interface BaseProductVariant {
   product: IProduct;
 }
 
-interface ClothingVariant extends BaseProductVariant {
+export interface ClothingVariant extends BaseProductVariant {
   product: IProduct & { type: "Clothing" };
   size: ISize;
   color: IColor;
 }
 
-interface AccessoryVariant extends BaseProductVariant {
+export interface AccessoryVariant extends BaseProductVariant {
   product: IProduct & { type: "Accessory" };
   size?: null;
   color?: null;

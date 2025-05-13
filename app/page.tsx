@@ -31,7 +31,8 @@ export default async function Home() {
     product_variant(
       *,
       size(*),
-      color(*)
+      color(*),
+      product(*)
     ),
     product_tag(
       tag!inner(*)
