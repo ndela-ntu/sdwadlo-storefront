@@ -14,8 +14,8 @@ export default interface IProduct {
   price: number;
   subcategory: ISubcategory;
   material: IMaterial;
-  product_tag: Array<{ tag: ITag }>;
   product_variant: IProductVariant[];
+  product_tag: Array<{ tag: ITag }>;
   type: "Clothing" | "Accessory";
   status: 'Listed' | 'Unlisted';
 }
