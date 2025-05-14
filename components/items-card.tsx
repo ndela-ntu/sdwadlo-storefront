@@ -3,14 +3,14 @@ import Image from "next/image";
 import ITag from "@/models/tag";
 import ICategory from "@/models/category";
 
-export default function ItemsCard({ item }: { item: ITag | ICategory }) {
+export default function ItemsCard({ item, className }: { item: ITag | ICategory; className?: string; }) {
   const isVideo = item.media_url?.match(/\.(mp4|webm|mov|avi)$/i);
   const placeholderImage = '/placeholder-image.svg'; // Make sure this path is correct
 
   return (
     <Link
       href={item.type === 'Tag' ? `/collections/${item.id}` : `categories/${item.id}`}
-      className="relative block aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 group"
+      className={`${className} ${!className?.includes('col-span') ? 'aspect-square' : ''} relative block overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 group`}
     >
       {/* Media - Takes full card area */}
       <div className="absolute inset-0 flex items-center justify-center bg-gray-100">

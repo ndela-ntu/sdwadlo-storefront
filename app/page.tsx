@@ -63,18 +63,35 @@ export default async function Home() {
     <div className="flex flex-col pb-2.5 space-y-2.5">
       <div className="flex flex-col md:flex-row space-y-2.5 md:space-x-2.5 md:space-y-none w-full">
         <div className="flex flex-col w-full">
-          <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-eerie-black text-white w-full max-h-fit">
-            <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
-              Shop by Category
+          <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white w-full max-h-fit">
+            <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
+              <div className="flex items-center space-x-2.5">
+                <span>Shop by Category</span>
+                <span>
+                  <ArrowRight />
+                </span>
+              </div>
             </span>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
-              {categories.map((category) => (
-                <ItemsCard key={category.id} item={category} />
+              {categories.map((category, index) => (
+                <div
+                  key={category.id}
+                  className={`
+        ${index === 0 ? "col-span-2" : ""}
+        ${index === 3 ? "col-span-2" : ""}
+        h-48 md:h-96
+      `}
+                >
+                  <ItemsCard
+                    item={category}
+                    className="w-full h-full" // Fill parent container
+                  />
+                </div>
               ))}
             </div>
           </div>
-          <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 text-black w-full max-h-fit">
-            <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
+          <div className="flex flex-col p-2.5 md:p-5 text-black w-full max-h-fit">
+            <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
               Proudly Kasi Brands
             </span>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
@@ -82,7 +99,7 @@ export default async function Home() {
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
-            <div className="flex items-center justify-end md:underline space-x-2 text-lg md:text-2xl font-bold py-2.5">
+            <div className="flex items-center justify-end  space-x-2 text-lg md:text-2xl font-bold py-2.5">
               <Link href="/products">View More</Link>
               <span>
                 <ArrowRight />
@@ -90,8 +107,8 @@ export default async function Home() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-chest-nut text-white max-h-fit md:w-[30%]">
-          <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
+        <div className="hidden md:flex flex-col p-2.5 md:p-5 bg-chest-nut text-white max-h-fit md:w-[30%]">
+          <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
             Featured Brands
           </span>
           <div className="grid grid-cols-1 gap-2.5 md:gap-5">
@@ -101,8 +118,8 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col py-2.5 px-2.5 md:py-5 md:px-5 bg-eerie-black text-white">
-        <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 md:underline">
+      <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white">
+        <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
           Collections
         </span>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
