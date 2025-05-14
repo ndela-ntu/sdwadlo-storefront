@@ -77,7 +77,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <div className="md:border rounded-lg overflow-hidden md:not-last:shadow-sm hover:shadow-md transition-shadow duration-300">
-      <div className="p-2.5 md:text-xl font-semibold">{product.brand.name}</div>
+      <div className="p-2.5 md:text-lg font-semibold text-gray-600">{product.brand.name}</div>
       <div className="relative aspect-square overflow-hidden">
         {currentVariant.image_urls.map((url, idx) => (
           <div
@@ -136,7 +136,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       )}
 
       <div className="flex flex-col p-2.5">
-        <span className="font-semibold md:text-xl">{product.name}</span>
+        <span className="font-semibold md:text-lg text-gray-600">{product.name}</span>
         <span className="text-sm md:text-base">R{product.price}</span>
       </div>
     </div>

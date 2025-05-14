@@ -4,7 +4,8 @@ import ITag from "@/models/tag";
 import ICategory from "@/models/category";
 
 export default function ItemsCard({ item }: { item: ITag | ICategory }) {
-  const isVideo = item.media_url.match(/\.(mp4|webm|mov|avi)$/i);
+  const isVideo = item.media_url?.match(/\.(mp4|webm|mov|avi)$/i);
+  const placeholderImage = '/placeholder-image.svg'; // Make sure this path is correct
 
   return (
     <Link
@@ -13,25 +14,35 @@ export default function ItemsCard({ item }: { item: ITag | ICategory }) {
     >
       {/* Media - Takes full card area */}
       <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-        {isVideo ? (
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-          >
-            <source
+        {item.media_url ? (
+          isVideo ? (
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source
+                src={item.media_url}
+                type={`video/${item.media_url?.split(".").pop()}`}
+              />
+            </video>
+          ) : (
+            <Image
               src={item.media_url}
-              type={`video/${item.media_url.split(".").pop()}`}
+              alt={`${item.name} media`}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-          </video>
+          )
         ) : (
           <Image
-            src={item.media_url}
-            alt={`${item.name} media`}
+            src={placeholderImage}
+            alt={`${item.name} placeholder`}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         )}
