@@ -1,4 +1,5 @@
 import BrandsCard from "@/components/brands-card";
+import BrandsCarousel from "@/components/brands-carousel";
 import ItemsCard from "@/components/items-card";
 import ProductCard from "@/components/product-card";
 import { supabase } from "@/utils/supabase";
@@ -62,7 +63,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col pb-2.5 space-y-2.5">
       <div className="flex flex-col md:flex-row space-y-2.5 md:space-x-2.5 md:space-y-none w-full">
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col space-y-2.5 md:space-y-0  w-full">
           <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white w-full max-h-fit">
             <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
               <div className="flex items-center space-x-2.5">
@@ -90,7 +91,7 @@ export default async function Home() {
               ))}
             </div>
           </div>
-          <div className="flex flex-col p-2.5 md:p-5 text-black w-full max-h-fit">
+          <div className="bg-silver md:bg-white flex flex-col p-2.5 md:p-5 text-white md:text-black w-full max-h-fit">
             <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
               Proudly Kasi Brands
             </span>
@@ -107,7 +108,7 @@ export default async function Home() {
             </div>
           </div>
         </div>
-        <div className="hidden md:flex flex-col p-2.5 md:p-5 bg-chest-nut text-white max-h-fit md:w-[30%]">
+        <div className="hidden md:flex flex-col md:p-5 bg-chest-nut text-white max-h-fit md:w-[30%]">
           <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
             Featured Brands
           </span>
@@ -116,6 +117,12 @@ export default async function Home() {
               <BrandsCard key={brand.id} brand={brand} />
             ))}
           </div>
+        </div>
+        <div className="md:hidden flex flex-col p-2.5 bg-chest-nut text-white max-h-fit">
+          <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
+            Featured Brands
+          </span>
+          <BrandsCarousel brands={brands} />
         </div>
       </div>
       <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white">
