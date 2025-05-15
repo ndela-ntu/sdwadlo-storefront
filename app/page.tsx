@@ -61,9 +61,9 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col pb-2.5 space-y-2.5">
+    <div className="flex flex-col pb-2.5">
       <div className="flex flex-col md:flex-row space-y-2.5 md:space-x-2.5 md:space-y-none w-full">
-        <div className="flex flex-col space-y-2.5 md:space-y-0  w-full">
+        <div className="flex flex-col md:space-y-0 w-full">
           <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white w-full max-h-fit">
             <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
               <div className="flex items-center space-x-2.5">
