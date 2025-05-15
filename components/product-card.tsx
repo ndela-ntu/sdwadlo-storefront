@@ -118,7 +118,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
 
       {product.type === "Clothing" && uniqueColors.length > 0 && (
-        <div className="px-4 py-2 flex gap-2">
+        <div className="md:px-2 py-2 flex gap-2">
           {uniqueColors.map((color) => (
             <button
               key={color.hex}
