@@ -91,7 +91,7 @@ export default async function Home() {
               ))}
             </div>
           </div>
-          <div className="bg-silver md:bg-white flex flex-col p-2.5 md:p-5 text-white md:text-black w-full max-h-fit">
+          <div className="bg-silver md:bg-white flex flex-col p-2.5 md:p-5 text-black w-full max-h-fit">
             <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
               Proudly Kasi Brands
             </span>
