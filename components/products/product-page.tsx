@@ -69,7 +69,7 @@ export default function ProductPage() {
   }, [currentPage]);
 
   return (
-    <div ref={topRef} className="pb-24 min-h-screen flex flex-col space-y-4">
+    <div ref={topRef} className="min-h-screen flex flex-col space-y-4">
       {loading && (
         <span className="flex items-center justify-center">
           <Loader2 className="animate-spin text-black" />

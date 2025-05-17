@@ -72,14 +72,7 @@ export default async function Home() {
               {categories.map((category, index) => (
                 <div
                   key={category.id}
-                  className={`
-                  // 
-                  //   (categories.length > 2 && index === 2) ||
-                  //   (categories.length > 3 && index === 3)
-                  //     ? "col-span-2"
-                  //     : ""
-                  //  
-                  h-48 md:h-96`}
+                  className={`h-48 md:h-96`}
                 >
                   <ItemsCard
                     item={category}
