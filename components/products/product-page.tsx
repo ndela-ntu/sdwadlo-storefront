@@ -82,7 +82,10 @@ export default function ProductPage() {
       <div className="sticky bottom-0 bg-white py-4 z-30 flex items-center justify-center space-x-2.5 text-sm md:text-base">
         <button
           disabled={currentPage <= 1}
-          onClick={() => setCurrentPage((p) => p - 1)}
+          onClick={() => {
+            setCurrentPage((p) => p - 1);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
           className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
         >
           Prev
@@ -94,7 +97,10 @@ export default function ProductPage() {
 
         <button
           disabled={currentPage >= totalPages}
-          onClick={() => setCurrentPage((p) => p + 1)}
+          onClick={() => {
+            setCurrentPage((p) => p + 1);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
           className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
         >
           Next

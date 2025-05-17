@@ -77,17 +77,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
       : [];
 
   return (
-    <Link
-      href={`/products/${product.id}`}
-      className="max-h-fit border rounded-lg text-black overflow-hidden md:not-last:shadow-sm hover:shadow-md transition-shadow duration-300"
-    >
+    <div className="max-h-fit border rounded-lg text-black overflow-hidden md:not-last:shadow-sm hover:shadow-md transition-shadow duration-300">
       <div className="p-2.5 text-xs md:text-base font-semibold text-black">
         {product.brand.name}
       </div>
       <div className="relative aspect-square overflow-hidden">
         {currentVariant.image_urls.map((url, idx) => (
-          <div
+          <Link
             key={idx}
+            href={`/products/${product.id}`}
             className={`absolute inset-0 transition-opacity duration-300 ${
               idx === currentImageIndex ? "opacity-100" : "opacity-0"
             }`}
@@ -99,7 +97,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               className="object-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-          </div>
+          </Link>
         ))}
 
         {/* Navigation Arrows */}
@@ -147,7 +145,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </span>
         <span className="text-xs md:text-base">R{product.price}</span>
       </div>
-    </Link>
+    </div>
   );
 };
 
