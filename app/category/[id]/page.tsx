@@ -60,7 +60,7 @@ export default async function ({
         <span><ChevronRight /></span>
         <span className="text:lg md:text-xl">{category.name}</span>
       </div>
-      <CategorySection products={products} subcategories={category.subcategory} />
+      <CategorySection initialProducts={products} subcategories={category.subcategory} />
     </div>
   );
 }
