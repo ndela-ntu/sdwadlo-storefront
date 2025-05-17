@@ -6,4 +6,5 @@ export default interface ICategory {
     media_url?: string;
     type: 'Category';
     status: "Active" | "Inactive";
+    subcategory: ISubcategory[];
 }

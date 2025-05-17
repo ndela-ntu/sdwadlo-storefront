@@ -9,7 +9,7 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
   return (
     <NavbarProvider>
       <Navbar />
-      <main className={`${useNavbarContext().dimensions.paddingClass}`}>
+      <main className={`${useNavbarContext().dimensions.paddingClass} md:4`}>
         {children}
         <Toaster />
       </main>
