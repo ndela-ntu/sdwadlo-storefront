@@ -62,7 +62,7 @@ export default function BrandsCard({ brand }: { brand: IBrand }) {
 
       {/* Brand Name - Bottom Left */}
       <div className="absolute bottom-0 left-0 right-0 p-1 bg-gradient-to-t from-black/80 to-transparent">
-        <h3 className="text-white font-bold text-md md:text-lg">
+        <h3 className="text-white font-bold text-md md:text-xl">
           {brand.name}
        </h3>
       </div>
