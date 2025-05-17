@@ -65,22 +65,20 @@ export default async function Home() {
       <div className="flex flex-col md:flex-row md:space-x-2.5 md:space-y-none w-full">
         <div className="flex flex-col md:space-y-0 w-full">
           <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white w-full max-h-fit">
-            <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
-              <div className="flex items-center space-x-2.5">
-                <span>Shop by Category</span>
-                <span>
-                  <ArrowRight />
-                </span>
-              </div>
+            <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5">
+              Shop by Category
             </span>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
               {categories.map((category, index) => (
                 <div
                   key={category.id}
                   className={`
-        ${index === 0 ? "col-span-2" : ""}
-        ${index === 3 ? "col-span-2" : ""}
-        h-48 md:h-96
+                  ${
+                    (categories.length > 0 && index === 0) ||
+                    (categories.length > 3 && index === 3)
+                      ? "col-span-2"
+                      : ""
+                  } h-48 md:h-96
       `}
                 >
                   <ItemsCard
@@ -91,16 +89,16 @@ export default async function Home() {
               ))}
             </div>
           </div>
-          <div className="bg-silver md:bg-white flex flex-col p-2.5 md:p-5 text-black w-full max-h-fit">
+          <div className="bg-white flex flex-col p-2.5 md:p-5 text-black w-full max-h-fit">
             <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
-              Proudly Kasi Brands
+              Proudly Kasi Items
             </span>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
-            <div className="flex items-center justify-end  space-x-2 text-lg md:text-2xl font-bold py-2.5">
+            <div className="flex items-center justify-end space-x-2 text-lg md:text-2xl font-bold py-2.5 underline">
               <Link href="/products">View More</Link>
               <span>
                 <ArrowRight />

@@ -76,8 +76,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
       : [];
 
   return (
-    <div className="md:border rounded-lg text-black overflow-hidden md:not-last:shadow-sm hover:shadow-md transition-shadow duration-300">
-      <div className="py-2.5 md:p-2.5 text-sm md:text-base font-semibold text-black">{product.brand.name}</div>
+    <div className="max-h-fit border rounded-lg text-black overflow-hidden md:not-last:shadow-sm hover:shadow-md transition-shadow duration-300">
+      <div className="p-2.5 text-xs md:text-base font-semibold text-black">{product.brand.name}</div>
       <div className="relative aspect-square overflow-hidden">
         {currentVariant.image_urls.map((url, idx) => (
           <div
@@ -118,7 +118,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
 
       {product.type === "Clothing" && uniqueColors.length > 0 && (
-        <div className="md:px-2 py-2 flex gap-2">
+        <div className="p-2.5 flex space-x-2.5">
           {uniqueColors.map((color) => (
             <button
               key={color.hex}
@@ -135,8 +135,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
       )}
 
-      <div className="flex flex-col py-2.5 md:p-2.5">
-        <span className="font-semibold text-sm md:text-base text-gray-900">{product.name}</span>
+      <div className="flex flex-col p-2.5">
+        <span className="font-semibold text-xs md:text-base text-gray-900">{product.name}</span>
         <span className="text-xs md:text-base">R{product.price}</span>
       </div>
     </div>

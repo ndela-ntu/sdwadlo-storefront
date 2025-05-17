@@ -4,7 +4,7 @@ import IBrand from "@/models/brand";
 
 export default function BrandsCard({ brand }: { brand: IBrand }) {
   const isVideo = brand.media_url?.match(/\.(mp4|webm|mov|avi)$/i);
-  const placeholderImage = '/placeholder-image.svg'; // Update with your actual placeholder path
+  const placeholderImage = "/placeholder-image.svg"; // Update with your actual placeholder path
 
   return (
     <Link
@@ -12,14 +12,14 @@ export default function BrandsCard({ brand }: { brand: IBrand }) {
       className="relative block aspect-square overflow-hidden rounded-none shadow-md hover:shadow-lg transition-shadow duration-300 group"
     >
       {/* Brand Logo - Top Left */}
-      <div className="absolute top-1 left-1 z-10 w-16 h-16 bg-transparent p-1 rounded-md shadow-sm aspect-square">
+      <div className="absolute top-1 left-1 z-10 w-12 h-12 md:w-16 md:h-16 bg-transparent p-0.5 rounded-md shadow-sm aspect-square">
         <div className="relative w-full h-full">
           <Image
             src={brand.logo_url}
             alt={`${brand.name} logo`}
             fill
             className="object-contain"
-            sizes="64px"
+            sizes="100%"
           />
         </div>
       </div>
@@ -62,7 +62,9 @@ export default function BrandsCard({ brand }: { brand: IBrand }) {
 
       {/* Brand Name - Bottom Left */}
       <div className="absolute bottom-0 left-0 right-0 p-1 bg-gradient-to-t from-black/80 to-transparent">
-        <h3 className="text-white font-bold text-xl md:text-2xl">{brand.name}</h3>
+        <h3 className="text-white font-bold text-md md:text-lg">
+          {brand.name}
+       </h3>
       </div>
     </Link>
   );
