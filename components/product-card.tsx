@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import IProduct from "@/models/product";
 import IProductVariant from "@/models/product-variant";
+import Link from "next/link";
 
 interface ProductCardProps {
   product: IProduct;
@@ -76,8 +77,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
       : [];
 
   return (
-    <div className="max-h-fit border rounded-lg text-black overflow-hidden md:not-last:shadow-sm hover:shadow-md transition-shadow duration-300">
-      <div className="p-2.5 text-xs md:text-base font-semibold text-black">{product.brand.name}</div>
+    <Link
+      href={`/products/${product.id}`}
+      className="max-h-fit border rounded-lg text-black overflow-hidden md:not-last:shadow-sm hover:shadow-md transition-shadow duration-300"
+    >
+      <div className="p-2.5 text-xs md:text-base font-semibold text-black">
+        {product.brand.name}
+      </div>
       <div className="relative aspect-square overflow-hidden">
         {currentVariant.image_urls.map((url, idx) => (
           <div
@@ -136,10 +142,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
       )}
 
       <div className="flex flex-col p-2.5">
-        <span className="font-semibold text-xs md:text-base text-gray-900">{product.name}</span>
+        <span className="font-semibold text-xs md:text-base text-gray-900">
+          {product.name}
+        </span>
         <span className="text-xs md:text-base">R{product.price}</span>
       </div>
-    </div>
+    </Link>
   );
 };
 

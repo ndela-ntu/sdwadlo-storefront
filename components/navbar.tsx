@@ -149,15 +149,18 @@ const Navbar = () => {
     const fetchData = async () => {
       const { data: brands, error: brandsError } = await supabase
         .from("brand")
-        .select("*");
+        .select("*")
+        .eq("status", "Active");
 
       const { data: categories, error: categoriesError } = await supabase
         .from("category")
-        .select("*");
+        .select("*")
+        .eq("status", "Active");
 
       const { data: tags, error: tagsError } = await supabase
         .from("tag")
-        .select("*");
+        .select("*")
+        .eq("status", "Active");
 
       if (brandsError || categoriesError || tagsError) {
         toast("Error occurred", {

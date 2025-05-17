@@ -54,7 +54,9 @@ export default function CategorySection({
         if (error) throw error;
         setProducts(products);
       } catch (error: any) {
-        toast(error.message);
+        toast("Error occurred", {
+          description: `Error message: ${error.message}`,
+        });
       } finally {
         setIsLoading(false);
       }
