@@ -16,6 +16,7 @@ export default async function ({
     .select(`*, subcategory(*)`)
     .eq("id", awaitedParams.id)
     .single();
+    
   const { data: productData, error: fetchProdError } = await supabase
     .from("product")
     .select(

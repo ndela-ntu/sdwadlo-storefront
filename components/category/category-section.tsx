@@ -2,7 +2,11 @@
 
 import IProduct from "@/models/product";
 import ISubcategory from "@/models/subcategory";
+import { supabase } from "@/utils/supabase";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import ProductCard from "../product-card";
+import { Loader2 } from "lucide-react";
 
 export default function CategorySection({
   subcategories,
@@ -15,8 +19,53 @@ export default function CategorySection({
     "All"
   );
   const [products, setProducts] = useState<IProduct[]>(initialProducts);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {}, [selectedSubcat]);
+  useEffect(() => {
+    const fetchAndSetProducts = async () => {
+      setIsLoading(true);
+      try {
+        const { data: products, error } = await supabase
+          .from("product")
+          .select(
+            `
+            *,
+            brand!inner(*),
+            category!inner(*),
+            subcategory(*),
+            material(*),
+            product_variant(
+              *,
+              size(*),
+              color(*),
+              product(*)
+            ),
+            product_tag(
+              tag!inner(*)
+            )
+          `
+          )
+          .eq("subcategory_id", (selectedSubcat as ISubcategory).id)
+          .eq("status", "Listed")
+          .eq("brand.status", "Active")
+          .eq("category.status", "Active")
+          .eq("product_tag.tag.status", "Active");
+
+        if (error) throw error;
+        setProducts(products);
+      } catch (error: any) {
+        toast(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (selectedSubcat === "All") {
+      setProducts(initialProducts);
+    } else {
+      fetchAndSetProducts();
+    }
+  }, [selectedSubcat]);
 
   return (
     <div className="flex flex-col space-y-2.5">
@@ -24,7 +73,7 @@ export default function CategorySection({
         <span
           className={`${
             selectedSubcat === "All" ? "bg-eerie-black" : "bg-chest-nut"
-          } text-white rounded-4xl px-2.5 py-1 md:px-5 md:py-2.5`}
+          } text-white rounded-4xl px-2.5 py-1 md:px-5 md:py-2.5 cursor-pointer`}
           onClick={() => {
             setSelectedSubcat("All");
           }}
@@ -34,7 +83,11 @@ export default function CategorySection({
         {subcategories.map((subcat) => (
           <span
             key={subcat.id}
-            className="text-white bg-chest-nut rounded-4xl px-2.5 py-1 md:px-5 md:py-2.5"
+            className={`${
+              selectedSubcat !== "All" && selectedSubcat.id === subcat.id
+                ? "bg-eerie-black"
+                : "bg-chest-nut"
+            } text-white rounded-4xl px-2.5 py-1 md:px-5 md:py-2.5 cursor-pointer`}
             onClick={() => {
               setSelectedSubcat(subcat);
             }}
@@ -44,6 +97,19 @@ export default function CategorySection({
         ))}
       </div>
       <div className="border-b border-eerie-black" />
+      {isLoading ? (
+        <div className="flex items-center justify-center w-full p-5">
+          <Loader2 className="animate-spin w-5 h-5 md:w-8 md:h-8 text-black" />
+        </div>
+      ) : products.length > 0 ? (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-5">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex items-center text-gray-500">No items found</div>
+      )}
     </div>
   );
 }

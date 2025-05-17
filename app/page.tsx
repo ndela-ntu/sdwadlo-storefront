@@ -68,18 +68,18 @@ export default async function Home() {
             <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5">
               Shop by Category
             </span>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
+            <div className="grid grid-cols-2 gap-2.5 md:gap-5">
               {categories.map((category, index) => (
                 <div
                   key={category.id}
                   className={`
-                  ${
-                    (categories.length > 0 && index === 0) ||
-                    (categories.length > 3 && index === 3)
-                      ? "col-span-2"
-                      : ""
-                  } h-48 md:h-96
-      `}
+                  // 
+                  //   (categories.length > 2 && index === 2) ||
+                  //   (categories.length > 3 && index === 3)
+                  //     ? "col-span-2"
+                  //     : ""
+                  //  
+                  h-48 md:h-96`}
                 >
                   <ItemsCard
                     item={category}
@@ -125,7 +125,7 @@ export default async function Home() {
       </div>
       <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white">
         <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
-          Collections
+          Shop Collections
         </span>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
           {tags.map((tag) => (

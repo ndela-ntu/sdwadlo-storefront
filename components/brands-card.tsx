@@ -9,7 +9,7 @@ export default function BrandsCard({ brand }: { brand: IBrand }) {
   return (
     <Link
       href={`/brands/${brand.id}`}
-      className="relative block aspect-square overflow-hidden rounded-none shadow-md hover:shadow-lg transition-shadow duration-300 group"
+      className="relative block aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 group"
     >
       {/* Brand Logo - Top Left */}
       <div className="absolute top-1 left-1 z-10 w-12 h-12 md:w-16 md:h-16 bg-transparent p-0.5 rounded-md shadow-sm aspect-square">
