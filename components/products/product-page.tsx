@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/utils/supabase";
 import ProductCard from "@/components/product-card";
 import IProduct from "@/models/product";
@@ -14,6 +14,7 @@ export default function ProductPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const topRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -61,10 +62,14 @@ export default function ProductPage() {
     };
 
     fetchProducts();
+    if (topRef.current) {
+      console.log("scrolling");
+      topRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [currentPage]);
 
   return (
-    <div className="pb-24 min-h-screen flex flex-col space-y-4">
+    <div ref={topRef} className="pb-24 min-h-screen flex flex-col space-y-4">
       {loading && (
         <span className="flex items-center justify-center">
           <Loader2 className="animate-spin text-black" />
@@ -84,7 +89,6 @@ export default function ProductPage() {
           disabled={currentPage <= 1}
           onClick={() => {
             setCurrentPage((p) => p - 1);
-            window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
         >
@@ -99,7 +103,6 @@ export default function ProductPage() {
           disabled={currentPage >= totalPages}
           onClick={() => {
             setCurrentPage((p) => p + 1);
-            window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
         >
