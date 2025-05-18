@@ -19,7 +19,19 @@ export default function BrandsCarousel({ brands }: { brands: IBrand[] }) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
-  const placeholderImage = "/placeholder-image.svg"; // Update with your actual placeholder path
+  const [orientation, setOrientation] = useState<"horizontal" | "vertical">(
+    "horizontal"
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setOrientation(window.innerWidth >= 768 ? "vertical" : "horizontal");
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const onInit = useCallback(() => {
     setCount(0);
@@ -63,13 +75,13 @@ export default function BrandsCarousel({ brands }: { brands: IBrand[] }) {
           }),
         ]}
         setApi={setApi}
-        opts={{ align: "center" }}
+        opts={{ align: "center", loop: true }}
         className="w-full h-full"
-        orientation={`${typeof window !== "undefined" && window.innerWidth >= 768 ? 'vertical' : 'horizontal'}`}
+        orientation={orientation}
       >
-        <CarouselContent className="">
+        <CarouselContent className="-mt-1 h-full">
           {brands.map((brand) => (
-            <CarouselItem key={brand.id} className="basis-1/2">
+            <CarouselItem key={brand.id} className="basis-1/2 pt-1">
               <BrandsCard brand={brand} />
             </CarouselItem>
           ))}
