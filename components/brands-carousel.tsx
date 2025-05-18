@@ -65,6 +65,7 @@ export default function BrandsCarousel({ brands }: { brands: IBrand[] }) {
         setApi={setApi}
         opts={{ align: "center" }}
         className="w-full h-full"
+        orientation={`${typeof window !== "undefined" && window.innerWidth >= 768 ? 'vertical' : 'horizontal'}`}
       >
         <CarouselContent className="">
           {brands.map((brand) => (

@@ -15,8 +15,8 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
           {children}
           <Toaster richColors />
         </main>
-        
-        <footer className="bg-silver text-black">
+        <div className="border-b border-gray-500" />
+        <footer className="text-black">
           <div className="container mx-auto px-4 py-8 md:py-12">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
               <div className="space-y-4">

@@ -104,7 +104,7 @@ export default function CategorySection({
           <Loader2 className="animate-spin w-5 h-5 md:w-8 md:h-8 text-black" />
         </div>
       ) : products.length > 0 ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

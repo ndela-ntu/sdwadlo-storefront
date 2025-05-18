@@ -5,11 +5,11 @@ import ICategory from "@/models/category";
 
 export default function ItemsCard({ item, className }: { item: ITag | ICategory; className?: string; }) {
   const isVideo = item.media_url?.match(/\.(mp4|webm|mov|avi)$/i);
-  const placeholderImage = '/placeholder-image.svg'; // Make sure this path is correct
+  const placeholderImage = '/placeholder-image.svg';
 
   return (
     <Link
-      href={item.type === 'Tag' ? `/collections/${item.id}` : `/category/${item.id}`}
+      href={item.type === 'Tag' ? `/collection/${item.id}` : `/category/${item.id}`}
       className={`${className} ${!className?.includes('col-span') ? 'aspect-square' : ''} relative block overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 group`}
     >
       {/* Media - Takes full card area */}

@@ -8,7 +8,7 @@ export default function BrandsCard({ brand }: { brand: IBrand }) {
 
   return (
     <Link
-      href={`/brands/${brand.id}`}
+      href={`/brand/${brand.id}`}
       className="relative block aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 group"
     >
       {/* Brand Logo - Top Left */}

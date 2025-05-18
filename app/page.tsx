@@ -70,13 +70,10 @@ export default async function Home() {
             </span>
             <div className="grid grid-cols-2 gap-2.5 md:gap-5">
               {categories.map((category, index) => (
-                <div
-                  key={category.id}
-                  className={`h-48 md:h-96`}
-                >
+                <div key={category.id} className={`h-48 md:h-96`}>
                   <ItemsCard
-                    item={category}
-                    className="w-full h-full" // Fill parent container
+                    item={{ ...category, type: "Category" }}
+                    className="w-full h-full"
                   />
                 </div>
               ))}
@@ -99,21 +96,16 @@ export default async function Home() {
             </div>
           </div>
         </div>
-        <div className="hidden md:flex flex-col md:p-5 bg-chest-nut text-white max-h-fit md:w-[30%]">
-          <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
-            Featured Brands
-          </span>
-          <div className="grid grid-cols-1 gap-2.5 md:gap-5">
-            {brands.map((brand) => (
-              <BrandsCard key={brand.id} brand={brand} />
-            ))}
-          </div>
-        </div>
-        <div className="md:hidden flex flex-col p-2.5 bg-chest-nut text-white max-h-fit">
+        <div className="flex flex-col p-2.5 md:p-5 bg-chest-nut text-white max-h-fit md:w-[30%]">
           <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
             Featured Brands
           </span>
           <BrandsCarousel brands={brands} />
+          {/* <div className="grid grid-cols-1 gap-2.5 md:gap-5">
+            {brands.map((brand) => (
+              <BrandsCard key={brand.id} brand={brand} />
+            ))}
+          </div> */}
         </div>
       </div>
       <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white">
@@ -122,7 +114,7 @@ export default async function Home() {
         </span>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
           {tags.map((tag) => (
-            <ItemsCard key={tag.id} item={tag} />
+            <ItemsCard key={tag.id} item={{ ...tag, type: "Tag" }} />
           ))}
         </div>
       </div>
