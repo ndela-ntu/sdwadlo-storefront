@@ -70,7 +70,7 @@ export default function CategorySection({
   }, [selectedSubcat]);
 
   return (
-    <div className="flex flex-col space-y-2.5">
+    <div className="flex flex-col space-y-2.5 mb-5">
       <div className="flex flex-wrap text-md md:text-xl space-x-2.5">
         <span
           className={`${
