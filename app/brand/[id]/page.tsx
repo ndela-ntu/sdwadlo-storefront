@@ -1,3 +1,4 @@
+import BrandSection from "@/components/brand/brand-section";
 import IBrand from "@/models/brand";
 import IProduct from "@/models/product";
 import { supabase } from "@/utils/supabase";
@@ -36,7 +37,7 @@ export default async function ({
     )
   `
     )
-    .eq("brand_id", awaitedParams.id) // <-- changed from category_id
+    .eq("brand_id", awaitedParams.id)
     .eq("status", "Listed")
     .eq("brand.status", "Active")
     .eq("category.status", "Active")
@@ -62,6 +63,7 @@ export default async function ({
         </span>
         <span className="text:lg md:text-xl">{brand.name}</span>
       </div>
+      <BrandSection products={products} />
     </div>
   );
 }
