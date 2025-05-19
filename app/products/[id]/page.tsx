@@ -83,7 +83,7 @@ export default async function Page({
         <PreviewProduct product={product} />
       </div>
       <div className="border-b border-gray-500 my-2.5 md:my-5" />
-      <div className="w-full flex flex-col space-y-2.5 items-start">
+      <div className="w-full flex flex-col space-y-2.5 items-start mb-5">
         <span className="font-semibold text-lg md:text-xl">Similar Items</span>
         <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5">
           {similarProducts.map((product) => (

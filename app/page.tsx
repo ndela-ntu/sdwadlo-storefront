@@ -101,11 +101,6 @@ export default async function Home() {
             Featured Brands
           </span>
           <BrandsCarousel brands={brands} />
-          {/* <div className="grid grid-cols-1 gap-2.5 md:gap-5">
-            {brands.map((brand) => (
-              <BrandsCard key={brand.id} brand={brand} />
-            ))}
-          </div> */}
         </div>
       </div>
       <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white">
