@@ -48,7 +48,9 @@ export default async function Page({
         </span>
         <span className="text:lg md:text-xl">{product.name}</span>
       </div>
-      <PreviewProduct product={product} />
+      <div className="flex flex-col items-center justify-center w-full">
+        <PreviewProduct product={product} />
+      </div>
     </div>
   );
 }
