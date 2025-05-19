@@ -128,11 +128,11 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
           </div>
 
           <div className="flex flex-col">
-            <p className="text-gray-600 text-sm">{product.description}</p>
+            <p className="text-gray-600 text-sm mb-1">{product.description}</p>
             <div className="flex flex-wrap space-x-2 items-center">
               <div>
                 {product.product_tag.map((tagData) => (
-                  <span className="bg-silver text-white text-sm p-1.5 rounded-lg">
+                  <span key={tagData.tag.name} className="bg-silver text-white text-sm p-1.5 rounded-lg">
                     #{tagData.tag.name}
                   </span>
                 ))}
