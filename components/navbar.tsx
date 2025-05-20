@@ -60,14 +60,21 @@ const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
   const { cart } = useCart();
   const isFirstRender = useRef(true);
+  const prevCartLength = useRef(cart.length);
 
   useEffect(() => {
     if (isFirstRender.current) {
-      isFirstRender.current = false; // Skip the first effect run
+      isFirstRender.current = false;
+      prevCartLength.current = cart.length;
       return;
     }
 
-    setIsCartOpen(true);
+    const wasProductAdded = cart.length > prevCartLength.current;
+    prevCartLength.current = cart.length;
+
+    if (wasProductAdded) {
+      setIsCartOpen(true);
+    }
   }, [cart]);
 
   useEffect(() => {

@@ -2,13 +2,19 @@
 
 import IProduct from "@/models/product";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import IProductVariant from "@/models/product-variant";
 import { useCart } from "@/context/CartContext";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function PreviewProduct({ product }: { product: IProduct }) {
-  const { cart, addProduct, removeProduct } = useCart();
+  const { cart, addProduct, removeProduct, clearCart } = useCart();
   const isClothing = product.type === "Clothing";
   const variants = product.product_variant;
 
@@ -16,16 +22,80 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
     (v): v is Extract<IProductVariant, { color: object }> => v.color != null
   );
 
-  const [selectedColor, setSelectedColor] = useState(
-    clothingVariants[0]?.color?.name || ""
+  const [selectedColor, setSelectedColor] = useState<number | undefined>(
+    clothingVariants[0]?.color?.id
   );
+  const [selectedSize, setSelectedSize] = useState<number | undefined>(
+    undefined
+  );
+  const [currentVariant, setCurrentVariant] = useState<
+    IProductVariant | undefined
+  >(undefined);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleAddToCartClick = () => {
+    if (!selectedSize && isClothing) {
+      setShowTooltip(true);
+
+      setTimeout(() => {
+        setShowTooltip(false);
+      }, 2000);
+    } else {
+      if (isClothing) {
+        const variant = clothingVariants.find(
+          (variant) =>
+            variant.color.id === selectedColor &&
+            variant.size.id === selectedSize
+        );
+        if (variant) {
+          addProduct(product, variant);
+          setCurrentVariant(variant);
+        }
+      } else {
+        const variant = variants.find(
+          (variant) =>
+            variant.product.type === "Accessory" &&
+            variant.product.id === product.id &&
+            variant.size === null &&
+            variant.color === null
+        );
+        if (variant) {
+          addProduct(product, variant);
+          setCurrentVariant(variant);
+        }
+      }
+    }
+  };
+
+  const handleRemoveFromCartClick = () => {
+    if (currentVariant) {
+      removeProduct(product.id, currentVariant.id);
+    }
+  };
+
+  useEffect(() => {
+    setCurrentVariant(
+      variants.find(
+        (variant) =>
+          variant.color?.id === selectedColor && variant.size?.id === selectedSize
+      )
+    );
+  }, [selectedSize, selectedColor]);
+
+  // useEffect(() => {
+  //   clearCart();
+  // }, []);
+
+  useEffect(() => {
+    setSelectedSize(undefined);
+  }, [selectedColor]);
 
   const colorVariants = Array.from(
     new Map(clothingVariants.map((v) => [v.color?.name, v])).values()
   );
 
   const selectedVariants = isClothing
-    ? clothingVariants.filter((v) => v.color?.name === selectedColor)
+    ? clothingVariants.filter((v) => v.color?.id === selectedColor)
     : variants;
 
   const selectedImages = selectedVariants.flatMap((v) => v.image_urls);
@@ -82,13 +152,13 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
             <div className="grid grid-cols-4 gap-2">
               {colorVariants.map((variant, index) => {
                 const image = variant.image_urls[0];
-                const isSelected = variant.color?.name === selectedColor;
+                const isSelected = variant.color?.id === selectedColor;
 
                 return (
                   <button
                     key={index}
                     onClick={() => {
-                      setSelectedColor(variant.color?.name || "");
+                      setSelectedColor(variant.color?.id);
                       setImageIndex(0);
                     }}
                     className={`relative aspect-square bg-gray-100 rounded-md overflow-hidden border-2 ${
@@ -168,11 +238,12 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
                     <button
                       key={index}
                       onClick={() => {
-                        setSelectedColor(variant.color?.name || "");
+                        setSelectedColor(variant.color?.id);
+                       //setCurrentVariant(undefined);
                         setImageIndex(0);
                       }}
                       className={`px-3 py-1 text-sm rounded-full border ${
-                        selectedColor === variant.color?.name
+                        selectedColor === variant.color?.id
                           ? "bg-chest-nut text-white"
                           : "border-gray-300 hover:border-gray-400"
                       }`}
@@ -192,7 +263,7 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
                   {Array.from(
                     new Set(
                       clothingVariants
-                        .filter((v) => v.color?.name === selectedColor)
+                        .filter((v) => v.color?.id === selectedColor)
                         .map((v) => v.size?.name)
                     )
                   )
@@ -200,8 +271,7 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
                     .map((size, index) => {
                       const matchingVariant = clothingVariants.find(
                         (v) =>
-                          v.color?.name === selectedColor &&
-                          v.size?.name === size
+                          v.color?.id === selectedColor && v.size?.name === size
                       );
 
                       const isOutOfStock = matchingVariant?.quantity === 0;
@@ -210,7 +280,13 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
                         <button
                           key={index}
                           disabled={isOutOfStock}
+                          onClick={() => {
+                            setSelectedSize(matchingVariant?.size.id);
+                          }}
                           className={`px-3 py-1 text-sm rounded-full border ${
+                            selectedSize === matchingVariant?.size.id &&
+                            "bg-chest-nut text-white"
+                          } ${
                             isOutOfStock
                               ? "bg-silver text-white line-through cursor-not-allowed"
                               : "border-gray-300 hover:border-gray-400"
@@ -225,9 +301,34 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
             )}
           </div>
 
-          <button className="w-full md:w-auto bg-chest-nut text-white py-3 px-8 rounded-md hover:bg-silver hover:text-black transition-colors">
-            Add to Cart
-          </button>
+          <TooltipProvider>
+            <Tooltip open={showTooltip}>
+              <TooltipTrigger asChild>
+                {currentVariant && cart.find(
+                  (entry) =>
+                    entry.product.id === product.id &&
+                    entry.variant.id === currentVariant.id
+                ) ? (
+                  <button
+                    onClick={handleRemoveFromCartClick}
+                    className="w-full md:w-auto bg-chest-nut text-white py-3 px-8 rounded-md hover:bg-silver hover:text-black transition-colors"
+                  >
+                    Remove From Cart
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleAddToCartClick}
+                    className="w-full md:w-auto bg-chest-nut text-white py-3 px-8 rounded-md hover:bg-silver hover:text-black transition-colors"
+                  >
+                    Add to Cart
+                  </button>
+                )}
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Please select a size</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
     </div>
