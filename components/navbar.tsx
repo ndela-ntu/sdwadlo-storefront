@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useNavbarContext } from "@/context/NavbarContext";
+import { useCart } from "@/context/CartContext";
 
 interface NavItem {
   name: string;
@@ -57,6 +58,17 @@ const Navbar = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const { dimensions, setDimensions } = useNavbarContext();
   const [isMobile, setIsMobile] = useState(false);
+  const { cart } = useCart();
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false; // Skip the first effect run
+      return;
+    }
+
+    setIsCartOpen(true);
+  }, [cart]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -353,7 +365,7 @@ const Navbar = () => {
 
       {/* Cart Panel - slides from right */}
       <div
-        className={`cart-panel fixed top-0 right-0 h-full w-full sm:w-96 bg-white z-[60] transition-all duration-300 ease-in-out shadow-xl ${
+        className={`cart-panel fixed top-0 right-0 h-full w-full sm:w-96 lg:w-[35%] bg-white z-[60] transition-all duration-300 ease-in-out shadow-xl ${
           isCartOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -508,9 +520,20 @@ const Navbar = () => {
             <button onClick={() => setIsSearchOpen(!isSearchOpen)}>
               <Search />
             </button>
-            <button onClick={() => setIsCartOpen(!isCartOpen)}>
-              <ShoppingCart />
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsCartOpen(!isCartOpen)}
+                className="relative"
+              >
+                <ShoppingCart />
+              </button>
+
+              {cart.length > 0 && (
+                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-chest-nut rounded-full">
+                  {cart.length}
+                </span>
+              )}
+            </div>
             <button
               className="md:hidden text-eerie-black focus:outline-none"
               onClick={() => setIsMenuOpen(!isMenuOpen)}

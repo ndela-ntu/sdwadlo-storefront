@@ -5,8 +5,10 @@ import Image from "next/image";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import IProductVariant from "@/models/product-variant";
+import { useCart } from "@/context/CartContext";
 
 export default function PreviewProduct({ product }: { product: IProduct }) {
+  const { cart, addProduct, removeProduct } = useCart();
   const isClothing = product.type === "Clothing";
   const variants = product.product_variant;
 
@@ -19,9 +21,7 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
   );
 
   const colorVariants = Array.from(
-    new Map(
-      clothingVariants.map((v) => [v.color?.name, v])
-    ).values()
+    new Map(clothingVariants.map((v) => [v.color?.name, v])).values()
   );
 
   const selectedVariants = isClothing
@@ -185,30 +185,44 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
             )}
 
             {/* Size selection (clothing only) */}
-            {isClothing &&
-              clothingVariants.some((v) => v.size?.name) && (
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-2">
-                    Size
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {Array.from(
-                      new Set(
-                        clothingVariants.map((v) => v.size?.name)
-                      )
+            {isClothing && selectedColor && (
+              <div>
+                <h3 className="text-sm font-medium text-gray-900 mb-2">Size</h3>
+                <div className="flex flex-wrap gap-2">
+                  {Array.from(
+                    new Set(
+                      clothingVariants
+                        .filter((v) => v.color?.name === selectedColor)
+                        .map((v) => v.size?.name)
                     )
-                      .filter(Boolean)
-                      .map((size, index) => (
+                  )
+                    .filter(Boolean)
+                    .map((size, index) => {
+                      const matchingVariant = clothingVariants.find(
+                        (v) =>
+                          v.color?.name === selectedColor &&
+                          v.size?.name === size
+                      );
+
+                      const isOutOfStock = matchingVariant?.quantity === 0;
+
+                      return (
                         <button
                           key={index}
-                          className="px-3 py-1 text-sm rounded-full border border-gray-300 hover:border-gray-400"
+                          disabled={isOutOfStock}
+                          className={`px-3 py-1 text-sm rounded-full border ${
+                            isOutOfStock
+                              ? "bg-silver text-white line-through cursor-not-allowed"
+                              : "border-gray-300 hover:border-gray-400"
+                          }`}
                         >
                           {size}
                         </button>
-                      ))}
-                  </div>
+                      );
+                    })}
                 </div>
-              )}
+              </div>
+            )}
           </div>
 
           <button className="w-full md:w-auto bg-chest-nut text-white py-3 px-8 rounded-md hover:bg-silver hover:text-black transition-colors">

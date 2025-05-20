@@ -62,10 +62,10 @@ export default function ProductPage() {
     };
 
     fetchProducts();
-    if (topRef.current) {
-      console.log("scrolling");
-      topRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    // if (topRef.current) {
+    //   console.log("scrolling");
+    //   topRef.current.scrollIntoView({ behavior: "smooth" });
+    // }
   }, [currentPage]);
 
   return (
@@ -88,6 +88,7 @@ export default function ProductPage() {
         <button
           disabled={currentPage <= 1}
           onClick={() => {
+            window.scrollTo(0, 0);
             setCurrentPage((p) => p - 1);
           }}
           className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
@@ -102,6 +103,7 @@ export default function ProductPage() {
         <button
           disabled={currentPage >= totalPages}
           onClick={() => {
+            window.scrollTo(0, 0);
             setCurrentPage((p) => p + 1);
           }}
           className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
