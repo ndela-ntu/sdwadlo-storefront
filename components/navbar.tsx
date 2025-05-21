@@ -9,6 +9,7 @@ import {
   Menu,
   Search,
   ShoppingCart,
+  Trash,
   User,
   X,
 } from "lucide-react";
@@ -482,9 +483,10 @@ const Navbar = () => {
                         removeProduct(entry.product.id, entry.variant.id);
                         removeItemTotal(entry.variant.id);
                       }}
-                      className="text-sm md:text-base max-w-fit bg-silver text-white p-1 md:p-2.5 flex items-center justify-center rounded-lg"
+                      className="flex items-center justify-center space-x-2.5 text-sm md:text-base max-w-fit bg-silver text-white p-1 md:p-2.5 rounded-lg"
                     >
-                      Remove
+                      <Trash className="w-4 h-4" />
+                      <span>Remove</span>
                     </button>
                   </div>
                 </div>
