@@ -34,7 +34,11 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
   const [showTooltip, setShowTooltip] = useState(false);
 
   const handleAddToCartClick = () => {
-    if (!selectedSize && isClothing) {
+    if (
+      !selectedSize &&
+      isClothing &&
+      clothingVariants.some((variant) => variant.size)
+    ) {
       setShowTooltip(true);
 
       setTimeout(() => {
@@ -42,11 +46,22 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
       }, 2000);
     } else {
       if (isClothing) {
-        const variant = clothingVariants.find(
-          (variant) =>
-            variant.color.id === selectedColor &&
-            variant.size.id === selectedSize
-        );
+        let variant: IProductVariant | undefined;
+        if (!clothingVariants.some((variant) => variant.size)) {
+          variant = clothingVariants.find(
+            (variant) =>
+              variant.color.id === selectedColor &&
+              variant.product.id === product.id
+          );
+        } else {
+          variant = clothingVariants.find(
+            (variant) =>
+              product.id === variant.product.id &&
+              variant.color.id === selectedColor &&
+              variant.size?.id === selectedSize
+          );
+        }
+
         if (variant) {
           addProduct(product, variant);
           setCurrentVariant(variant);
@@ -77,7 +92,9 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
     setCurrentVariant(
       variants.find(
         (variant) =>
-          variant.color?.id === selectedColor && variant.size?.id === selectedSize
+          product.id === variant.product.id &&
+          variant.color?.id === selectedColor &&
+          variant.size?.id === selectedSize
       )
     );
   }, [selectedSize, selectedColor]);
@@ -239,7 +256,7 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
                       key={index}
                       onClick={() => {
                         setSelectedColor(variant.color?.id);
-                       //setCurrentVariant(undefined);
+                        //setCurrentVariant(undefined);
                         setImageIndex(0);
                       }}
                       className={`px-3 py-1 text-sm rounded-full border ${
@@ -256,55 +273,61 @@ export default function PreviewProduct({ product }: { product: IProduct }) {
             )}
 
             {/* Size selection (clothing only) */}
-            {isClothing && selectedColor && (
-              <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Size</h3>
-                <div className="flex flex-wrap gap-2">
-                  {Array.from(
-                    new Set(
-                      clothingVariants
-                        .filter((v) => v.color?.id === selectedColor)
-                        .map((v) => v.size?.name)
+            {isClothing &&
+              selectedColor &&
+              clothingVariants.some((variant) => variant.size) && (
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">
+                    Size
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {Array.from(
+                      new Set(
+                        clothingVariants
+                          .filter((v) => v.color?.id === selectedColor)
+                          .map((v) => v.size?.name)
+                      )
                     )
-                  )
-                    .filter(Boolean)
-                    .map((size, index) => {
-                      const matchingVariant = clothingVariants.find(
-                        (v) =>
-                          v.color?.id === selectedColor && v.size?.name === size
-                      );
+                      .filter(Boolean)
+                      .map((size, index) => {
+                        const matchingVariant = clothingVariants.find(
+                          (v) =>
+                            v.color?.id === selectedColor &&
+                            v.size?.name === size
+                        );
 
-                      const isOutOfStock = matchingVariant?.quantity === 0;
+                        const isOutOfStock = matchingVariant?.quantity === 0;
 
-                      return (
-                        <button
-                          key={index}
-                          disabled={isOutOfStock}
-                          onClick={() => {
-                            setSelectedSize(matchingVariant?.size.id);
-                          }}
-                          className={`px-3 py-1 text-sm rounded-full border ${
-                            selectedSize === matchingVariant?.size.id &&
-                            "bg-chest-nut text-white"
-                          } ${
-                            isOutOfStock
-                              ? "bg-silver text-white line-through cursor-not-allowed"
-                              : "border-gray-300 hover:border-gray-400"
-                          }`}
-                        >
-                          {size}
-                        </button>
-                      );
-                    })}
+                        return (
+                          <button
+                            key={index}
+                            disabled={isOutOfStock}
+                            onClick={() => {
+                              setSelectedSize(matchingVariant?.size?.id);
+                            }}
+                            className={`px-3 py-1 text-sm rounded-full border ${
+                              selectedSize === matchingVariant?.size?.id &&
+                              "bg-chest-nut text-white"
+                            } ${
+                              isOutOfStock
+                                ? "bg-silver text-white line-through cursor-not-allowed"
+                                : "border-gray-300 hover:border-gray-400"
+                            }`}
+                          >
+                            {size}
+                          </button>
+                        );
+                      })}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
 
           <TooltipProvider>
             <Tooltip open={showTooltip}>
               <TooltipTrigger asChild>
-                {currentVariant && cart.find(
+                {currentVariant &&
+                cart.find(
                   (entry) =>
                     entry.product.id === product.id &&
                     entry.variant.id === currentVariant.id

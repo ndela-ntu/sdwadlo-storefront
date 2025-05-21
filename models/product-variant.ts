@@ -11,7 +11,7 @@ interface BaseProductVariant {
 
 export interface ClothingVariant extends BaseProductVariant {
   product: IProduct & { type: "Clothing" };
-  size: ISize;
+  size?: ISize;
   color: IColor;
 }
 
