@@ -28,6 +28,9 @@ import {
 } from "./ui/dropdown-menu";
 import { useNavbarContext } from "@/context/NavbarContext";
 import { useCart } from "@/context/CartContext";
+import { useItemTotals } from "@/context/ItemTotalsContext";
+import Image from "next/image";
+import QuantitySelector from "./quantity-selector";
 
 interface NavItem {
   name: string;
@@ -58,7 +61,11 @@ const Navbar = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const { dimensions, setDimensions } = useNavbarContext();
   const [isMobile, setIsMobile] = useState(false);
-  const { cart } = useCart();
+  const { cart, removeProduct } = useCart();
+  const { itemTotals, addItemTotal, removeItemTotal, clearItemTotals } =
+    useItemTotals();
+  const [total, setTotal] = useState<number>(0);
+
   const isFirstRender = useRef(true);
   const prevCartLength = useRef(cart.length);
 
@@ -76,6 +83,27 @@ const Navbar = () => {
       setIsCartOpen(true);
     }
   }, [cart]);
+
+  useEffect(() => {
+    clearItemTotals();
+    cart.forEach((entry) => {
+      addItemTotal({ id: entry.variant.id, total: entry.product.price });
+    });
+  }, []);
+
+  useEffect(() => {
+    setTotal(itemTotals.reduce((a, v) => a + v.total, 0));
+  }, [itemTotals]);
+
+  const updateTotal = (variantId: number, quantity: number) => {
+    const cartProduct = cart.find((entry) => entry.variant.id === variantId);
+
+    removeItemTotal(variantId);
+    addItemTotal({
+      id: variantId,
+      total: (cartProduct?.product.price || 0) * quantity,
+    });
+  };
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -372,7 +400,7 @@ const Navbar = () => {
 
       {/* Cart Panel - slides from right */}
       <div
-        className={`cart-panel fixed top-0 right-0 h-full w-full sm:w-96 lg:w-[35%] bg-white z-[60] transition-all duration-300 ease-in-out shadow-xl ${
+        className={`px-2.5 md:p-5 cart-panel fixed top-0 right-0 h-full w-full sm:w-96 lg:w-[35%] bg-white z-[60] transition-all duration-300 ease-in-out shadow-xl ${
           isCartOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -387,33 +415,91 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div className="flex-1 p-4 overflow-y-auto">
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <ShoppingCart size={48} className="text-gray-300 mb-4" />
-              <h3 className="text-xl font-medium text-gray-700 mb-2">
-                Your cart is empty
-              </h3>
-              <p className="text-gray-500 mb-6">
-                Looks like you haven't added any items to your cart yet.
-              </p>
-              <Link
-                href="/products"
-                onClick={() => setIsCartOpen(false)}
-                className="px-6 py-2 bg-chest-nut text-white rounded-md hover:bg-chest-nut/90 transition"
-              >
-                Continue Shopping
-              </Link>
+          {cart.length === 0 ? (
+            <div className="flex-1 p-4 overflow-y-auto">
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                <ShoppingCart size={48} className="text-gray-300 mb-4" />
+                <h3 className="text-xl font-medium text-gray-700 mb-2">
+                  Your cart is empty
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  Looks like you haven't added any items to your cart yet.
+                </p>
+                <Link
+                  href="/products"
+                  onClick={() => setIsCartOpen(false)}
+                  className="px-6 py-2 bg-chest-nut text-white rounded-md hover:bg-chest-nut/90 transition"
+                >
+                  Continue Shopping
+                </Link>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col space-y-2.5">
+              {cart.map((entry, i) => (
+                <div key={i} className="flex space-x-2.5">
+                  <div className="relative aspect-square border w-1/2">
+                    <Image
+                      src={entry.variant.image_urls[0]}
+                      alt="Image of item"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-2.5 w-1/2 py-2.5 px-1 md:py-5 md:px-2.5">
+                    <div className="flex flex-col">
+                      <span className="text-xs md:text-base text-gray-600">
+                        {entry.product.brand.name}
+                      </span>
+                      <span className="text-base md:text-lg font-bold">
+                        {entry.product.name}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs md:text-base font-semibold">
+                        R{entry.product.price}
+                      </span>
+                      {entry.variant.size && (
+                        <span className="text-xs md:text-base text-gray-600">
+                          Size: {entry.variant.size.name}
+                        </span>
+                      )}
+                      {entry.variant.color && (
+                        <span className="text-xs md:text-base text-gray-600">
+                          Color: {entry.variant.color.name}
+                        </span>
+                      )}
+                    </div>
+                    <QuantitySelector
+                      maxQuantity={entry.variant.quantity}
+                      onChangeCB={(value) => {
+                        updateTotal(entry.variant.id, value);
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        removeProduct(entry.product.id, entry.variant.id);
+                        removeItemTotal(entry.variant.id);
+                      }}
+                      className="text-sm md:text-base max-w-fit bg-silver text-white p-1 md:p-2.5 flex items-center justify-center rounded-lg"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="border-t border-gray-200 p-4">
             <div className="flex justify-between items-center mb-4">
               <span className="font-medium">Subtotal</span>
-              <span className="font-bold">R0.00</span>
+              <span className="font-bold">R{total}</span>
             </div>
             <button
-              disabled
-              className="w-full py-3 bg-gray-300 text-white rounded-md cursor-not-allowed"
+              disabled={cart.length === 0}
+              className="w-full py-3 disabled:bg-gray-300 bg-chest-nut text-white rounded-md cursor-not-allowed"
             >
               Checkout
             </button>
