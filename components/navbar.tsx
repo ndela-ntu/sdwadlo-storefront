@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ChevronDown,
   ChevronUp,
@@ -42,7 +42,6 @@ const navItems: NavItem[] = [
   { name: "Home", href: "/" },
   { name: "Brands" },
   { name: "Categories" },
-  { name: "Accessories", href: "/accessories" },
   { name: "Collections" },
 ];
 
@@ -66,6 +65,7 @@ const Navbar = () => {
   const { itemTotals, addItemTotal, removeItemTotal, clearItemTotals } =
     useItemTotals();
   const [total, setTotal] = useState<number>(0);
+  const router = useRouter();
 
   const isFirstRender = useRef(true);
   const prevCartLength = useRef(cart.length);
@@ -354,7 +354,7 @@ const Navbar = () => {
             <input
               type="text"
               placeholder="Search products..."
-              className="flex-1 py-3 px-4 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-chest-nut"
+              className="flex-1 py-2 px-4 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-chest-nut"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               autoFocus
@@ -380,12 +380,21 @@ const Navbar = () => {
                   <Link
                     key={product.id}
                     href={`/products/${product.id}`}
-                    className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
+                    className="flex items-center space-x-1 md:space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
                     onClick={() => {
                       setIsSearchOpen(false);
                       setSearchTerm("");
                     }}
                   >
+                    <div className="relative aspect-square w-1/3 md:w-1/4">
+                      <Image
+                        src={product.product_variant[0].image_urls[0]}
+                        alt="Image of item"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover"
+                      />
+                    </div>
                     <h4 className="font-medium">{product.name}</h4>
                   </Link>
                 ))}
@@ -501,6 +510,10 @@ const Navbar = () => {
             </div>
             <button
               disabled={cart.length === 0}
+              onClick={() => {
+                setIsCartOpen(false);
+                router.push("/checkout");
+              }}
               className="w-full py-3 disabled:bg-gray-300 bg-chest-nut text-white rounded-md cursor-not-allowed"
             >
               Checkout
