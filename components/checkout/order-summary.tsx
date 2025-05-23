@@ -66,7 +66,7 @@ export default function OrderSummary() {
                   )}
                 </div>
               </div>
-              <span className="text-xs p-2 bg-silver text-white rounded-full">
+              <span className="text-sm md:text-base p-2 bg-silver text-white rounded-full">
                 x{(itemTotals.find(
                   (itemTotal) => itemTotal.id === entry.variant.id
                 )?.total || 0) / entry.product.price}
