@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -8,8 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useItemTotals } from "@/context/ItemTotalsContext";
 
 export default function CheckoutDetails() {
+  const [total, setTotal] = useState(0);
+  const { itemTotals } = useItemTotals();
+
+  useEffect(() => {
+    setTotal(itemTotals.reduce((a, v) => a + v.total, 0));
+  }, [itemTotals]);
+
   return (
     <form className="flex flex-col w-full md:w-[30%] space-y-2.5 p-2.5">
       <h3 className="text-lg md:text-xl font-semibold underline">
@@ -97,10 +108,19 @@ export default function CheckoutDetails() {
           <Input name="postalCode" />
         </div>
       </div>
-      <div className="w-full my-2">
-        <button type="submit" className="bg-chest-nut text-white px-2.5 py-2 rounded-lg w-full">
-          Complete Checkout
-        </button>
+      <div className="flex flex-col space-y-2">
+        <div className="flex items-center justify-between font-semibold text-lg">
+          <span>Total</span>
+          <span>R{total}</span>
+        </div>
+        <div className="w-full my-2">
+          <button
+            type="submit"
+            className="bg-chest-nut text-white px-2.5 py-2 rounded-lg w-full"
+          >
+            Complete Checkout
+          </button>
+        </div>
       </div>
     </form>
   );
