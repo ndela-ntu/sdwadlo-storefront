@@ -35,6 +35,7 @@ export default function CheckoutDetails() {
   const [shippingCost, setShippingCost] = useState<number>(0);
   const [loadingShippingCost, setLoadingShippingCose] =
     useState<boolean>(false);
+  const [freeShipmentAmount, setFreeShipmentAmount] = useState<number>(0);
 
   const handleOnProvinceChange = async (value: string) => {
     try {
@@ -57,8 +58,33 @@ export default function CheckoutDetails() {
   };
 
   useEffect(() => {
+    const fetchFreeShipmentAmount = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("shipping_setting")
+          .select("*")
+          .eq("id", 1)
+          .single();
+
+        if (error) throw error;
+
+        setFreeShipmentAmount(data.free_shipment_amount);
+      } catch (error: any) {
+        toast("Error", { description: `An error occurred: ${error.message}` });
+      }
+    };
+
+    fetchFreeShipmentAmount();
+  }, []);
+
+  useEffect(() => {
     const subtotal = itemTotals.reduce((a, v) => a + v.total, 0);
-    setTotal(subtotal + shippingCost);
+    if (subtotal >= freeShipmentAmount) {
+      setTotal(subtotal);
+      setShippingCost(0);
+    } else {
+      setTotal(subtotal + shippingCost);
+    }
   }, [itemTotals, shippingCost]);
 
   return (
@@ -250,7 +276,7 @@ export default function CheckoutDetails() {
           {loadingShippingCost ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <span>R{shippingCost}</span>
+            <span>{total >= freeShipmentAmount ? "Free" : `R${shippingCost}`}</span>
           )}
         </div>
         <div className="flex items-center justify-between font-semibold text-lg">

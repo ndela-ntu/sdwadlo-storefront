@@ -65,6 +65,8 @@ const Navbar = () => {
   const { itemTotals, addItemTotal, removeItemTotal, clearItemTotals } =
     useItemTotals();
   const [total, setTotal] = useState<number>(0);
+  const [freeShipmentAmount, setFreeShipmentAmount] = useState<number>(0);
+
   const router = useRouter();
 
   const isFirstRender = useRef(true);
@@ -90,6 +92,24 @@ const Navbar = () => {
     cart.forEach((entry) => {
       addItemTotal({ id: entry.variant.id, total: entry.product.price });
     });
+
+    const fetchFreeShipmentAmount = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("shipping_setting")
+          .select("*")
+          .eq("id", 1)
+          .single();
+
+        if (error) throw error;
+
+        setFreeShipmentAmount(data.free_shipment_amount);
+      } catch (error: any) {
+        toast("Error", { description: `An error occurred: ${error.message}` });
+      }
+    };
+
+    fetchFreeShipmentAmount();
   }, []);
 
   useEffect(() => {
@@ -117,14 +137,14 @@ const Navbar = () => {
     if (isMobile) {
       setDimensions(
         isScrolled
-          ? { paddingClass: "pt-12", heightPx: 48 } // Slim mobile scrolled
+          ? { paddingClass: "pt-14", heightPx: 56 } // Slim mobile scrolled
           : { paddingClass: "pt-16", heightPx: 64 } // Regular mobile
       );
     } else {
       setDimensions(
         isScrolled
-          ? { paddingClass: "pt-20", heightPx: 80 } // Slim desktop scrolled
-          : { paddingClass: "pt-24", heightPx: 96 } // Regular desktop
+          ? { paddingClass: "pt-24", heightPx: 96 } // Slim desktop scrolled
+          : { paddingClass: "pt-28", heightPx: 112 } // Regular desktop
       );
     }
   }, [isScrolled, isMobile]);
@@ -257,7 +277,7 @@ const Navbar = () => {
                 {brands.map((brand) => (
                   <Link
                     key={brand.id}
-                    href={`/brands/${brand.id}`}
+                    href={`/brand/${brand.id}`}
                     className="block py-1 hover:text-chest-nut transition"
                     onClick={handleLinkClick}
                   >
@@ -291,7 +311,7 @@ const Navbar = () => {
                 {categories.map((category) => (
                   <Link
                     key={category.id}
-                    href={`/categories/${category.id}`}
+                    href={`/category/${category.id}`}
                     className="block py-1 hover:text-chest-nut transition"
                     onClick={handleLinkClick}
                   >
@@ -325,7 +345,7 @@ const Navbar = () => {
                 {tags.map((tag) => (
                   <Link
                     key={tag.id}
-                    href={`/collections/${tag.id}`}
+                    href={`/collection/${tag.id}`}
                     className="block py-1 hover:text-chest-nut transition"
                     onClick={handleLinkClick}
                   >
@@ -535,164 +555,174 @@ const Navbar = () => {
         }`}
         style={{ height: `${dimensions.heightPx}px` }}
       >
-        <div className="px-4 md:px-8 lg:px-16 flex justify-between items-center">
-          <div className="flex items-center">
-            <Link href="/">
-              <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
-                SDWADLO.CO
-              </h1>
-            </Link>
-            <div className="hidden md:flex md:items-center space-x-8 md:ml-8 md:text-xl">
-              {navItems.map((item) => {
-                if (item.href) {
-                  return (
-                    <Link
-                      key={item.name}
-                      className={`transition hover:text-chest-nut ${
-                        isActive(item.href) &&
-                        "border-b-4 border-chest-nut text-chest-nut font-bold"
-                      }`}
-                      href={item.href}
-                    >
-                      {item.name}
-                    </Link>
-                  );
-                } else {
-                  return (
-                    <DropdownMenu
-                      key={item.name}
-                      onOpenChange={(isOpen) =>
-                        handleDropdownOpenChange(item.name, isOpen)
-                      }
-                    >
-                      <DropdownMenuTrigger className="flex items-center space-x-2 focus:outline-none">
-                        <span className="transition hover:text-chest-nut">
-                          {item.name}
-                        </span>
-                        {openDropdown === item.name ? (
-                          <ChevronUp className="h-4 w-4" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4" />
-                        )}
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-48 max-h-[60vh] overflow-y-auto">
-                        {item.name === "Brands" && (
-                          <>
-                            <DropdownMenuLabel>Shop by Brand</DropdownMenuLabel>
-                            {brands.map((brand) => (
-                              <DropdownMenuItem key={brand.id} asChild>
-                                <Link href={`/brands/${brand.id}`}>
-                                  {brand.name}
-                                </Link>
-                              </DropdownMenuItem>
-                            ))}
-                          </>
-                        )}
-                        {item.name === "Categories" && (
-                          <>
-                            <DropdownMenuLabel>
-                              Shop by Category
-                            </DropdownMenuLabel>
-                            {categories.map((category) => (
-                              <DropdownMenuItem key={category.id} asChild>
-                                <Link href={`/categories/${category.id}`}>
-                                  {category.name}
-                                </Link>
-                              </DropdownMenuItem>
-                            ))}
-                          </>
-                        )}
-                        {item.name === "Collections" && (
-                          <>
-                            <DropdownMenuLabel>
-                              Shop Collections
-                            </DropdownMenuLabel>
-                            {tags.map((tag) => (
-                              <DropdownMenuItem key={tag.id} asChild>
-                                <Link href={`/collections/${tag.id}`}>
-                                  {tag.name}
-                                </Link>
-                              </DropdownMenuItem>
-                            ))}
-                          </>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  );
-                }
-              })}
+        <div className="flex flex-col w-full">
+          <div className="px-4 md:px-8 lg:px-16 flex justify-between items-center">
+            <div className="flex items-center">
+              <Link href="/">
+                <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
+                  SDWADLO.CO
+                </h1>
+              </Link>
+              <div className="hidden md:flex md:items-center space-x-8 md:ml-8 md:text-xl">
+                {navItems.map((item) => {
+                  if (item.href) {
+                    return (
+                      <Link
+                        key={item.name}
+                        className={`transition hover:text-chest-nut ${
+                          isActive(item.href) &&
+                          "border-b-4 border-chest-nut text-chest-nut font-bold"
+                        }`}
+                        href={item.href}
+                      >
+                        {item.name}
+                      </Link>
+                    );
+                  } else {
+                    return (
+                      <DropdownMenu
+                        key={item.name}
+                        onOpenChange={(isOpen) =>
+                          handleDropdownOpenChange(item.name, isOpen)
+                        }
+                      >
+                        <DropdownMenuTrigger className="flex items-center space-x-2 focus:outline-none">
+                          <span className="transition hover:text-chest-nut">
+                            {item.name}
+                          </span>
+                          {openDropdown === item.name ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4" />
+                          )}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-48 max-h-[60vh] overflow-y-auto">
+                          {item.name === "Brands" && (
+                            <>
+                              <DropdownMenuLabel>
+                                Shop by Brand
+                              </DropdownMenuLabel>
+                              {brands.map((brand) => (
+                                <DropdownMenuItem key={brand.id} asChild>
+                                  <Link href={`/brand/${brand.id}`}>
+                                    {brand.name}
+                                  </Link>
+                                </DropdownMenuItem>
+                              ))}
+                            </>
+                          )}
+                          {item.name === "Categories" && (
+                            <>
+                              <DropdownMenuLabel>
+                                Shop by Category
+                              </DropdownMenuLabel>
+                              {categories.map((category) => (
+                                <DropdownMenuItem key={category.id} asChild>
+                                  <Link href={`/category/${category.id}`}>
+                                    {category.name}
+                                  </Link>
+                                </DropdownMenuItem>
+                              ))}
+                            </>
+                          )}
+                          {item.name === "Collections" && (
+                            <>
+                              <DropdownMenuLabel>
+                                Shop Collections
+                              </DropdownMenuLabel>
+                              {tags.map((tag) => (
+                                <DropdownMenuItem key={tag.id} asChild>
+                                  <Link href={`/collection/${tag.id}`}>
+                                    {tag.name}
+                                  </Link>
+                                </DropdownMenuItem>
+                              ))}
+                            </>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    );
+                  }
+                })}
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center space-x-4">
-            <button className="cursor-pointer" onClick={() => setIsSearchOpen(!isSearchOpen)}>
-              <Search />
-            </button>
-            <div className="relative">
+            <div className="flex items-center space-x-4">
               <button
-                onClick={() => setIsCartOpen(!isCartOpen)}
-                className="relative cursor-pointer"
+                className="cursor-pointer"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
-                <ShoppingCart />
+                <Search />
               </button>
+              <div className="relative">
+                <button
+                  onClick={() => setIsCartOpen(!isCartOpen)}
+                  className="relative cursor-pointer"
+                >
+                  <ShoppingCart />
+                </button>
 
-              {cart.length > 0 && (
-                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-chest-nut rounded-full">
-                  {cart.length}
-                </span>
-              )}
+                {cart.length > 0 && (
+                  <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-chest-nut rounded-full">
+                    {cart.length}
+                  </span>
+                )}
+              </div>
+              <button
+                className="md:hidden text-eerie-black focus:outline-none"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X /> : <Menu />}
+              </button>
             </div>
-            <button
-              className="md:hidden text-eerie-black focus:outline-none"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X /> : <Menu />}
-            </button>
-          </div>
 
-          {/* Mobile Menu */}
-          <div
-            className={`mobile-menu fixed inset-y-0 left-0 w-64 bg-white transform ${
-              isMenuOpen ? "translate-x-0" : "-translate-x-full"
-            } md:hidden transition-transform duration-300 ease-in-out z-50 overflow-y-auto`}
-          >
-            <div className="flex flex-col p-2 space-y-4">
-              <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
-                SDWADLO.CO
-              </h1>
-              {navItems.map((item) => {
-                if (item.href) {
-                  return (
-                    <Link
-                      key={item.name}
-                      className={`transition hover:text-chest-nut text-lg max-w-fit ${
-                        isActive(item.href) &&
-                        "border-b-2 border-chest-nut text-chest-nut font-bold"
-                      }`}
-                      href={item.href}
-                      onClick={handleLinkClick}
-                    >
-                      {item.name}
-                    </Link>
-                  );
-                } else {
-                  return (
-                    <div key={item.name} className="w-full text-lg">
-                      {renderMobileSection(item.name)}
-                    </div>
-                  );
-                }
-              })}
-            </div>
-          </div>
-
-          {/* Overlay */}
-          {isMenuOpen && (
+            {/* Mobile Menu */}
             <div
-              className="fixed inset-0 bg-black/50 z-40 md:hidden"
-              onClick={() => setIsMenuOpen(false)}
-            />
-          )}
+              className={`mobile-menu fixed inset-y-0 left-0 w-64 bg-white transform ${
+                isMenuOpen ? "translate-x-0" : "-translate-x-full"
+              } md:hidden transition-transform duration-300 ease-in-out z-50 overflow-y-auto`}
+            >
+              <div className="flex flex-col p-2 space-y-4">
+                <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
+                  SDWADLO.CO
+                </h1>
+                {navItems.map((item) => {
+                  if (item.href) {
+                    return (
+                      <Link
+                        key={item.name}
+                        className={`transition hover:text-chest-nut text-lg max-w-fit ${
+                          isActive(item.href) &&
+                          "border-b-2 border-chest-nut text-chest-nut font-bold"
+                        }`}
+                        href={item.href}
+                        onClick={handleLinkClick}
+                      >
+                        {item.name}
+                      </Link>
+                    );
+                  } else {
+                    return (
+                      <div key={item.name} className="w-full text-lg">
+                        {renderMobileSection(item.name)}
+                      </div>
+                    );
+                  }
+                })}
+              </div>
+            </div>
+
+            {/* Overlay */}
+            {isMenuOpen && (
+              <div
+                className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                onClick={() => setIsMenuOpen(false)}
+              />
+            )}
+          </div>
+          <div className="flex items-center justify-center bg-chest-nut text-white text-sm">
+            Free delivery on orders over: R{freeShipmentAmount}
+          </div>
         </div>
       </nav>
     </>

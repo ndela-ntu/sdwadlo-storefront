@@ -9,7 +9,7 @@ type NavbarDimensions = {
 };
 
 const NavbarContext = createContext({
-  dimensions: { paddingClass: 'pt-16 md:pt-24', heightPx: 64 },
+  dimensions: { paddingClass: 'pt-20 md:pt-28', heightPx: 64 },
   setDimensions: (dimensions: NavbarDimensions) => {}
 });
 
