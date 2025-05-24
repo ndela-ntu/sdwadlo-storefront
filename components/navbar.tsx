@@ -514,7 +514,7 @@ const Navbar = () => {
                 setIsCartOpen(false);
                 router.push("/checkout");
               }}
-              className="w-full py-3 disabled:bg-gray-300 bg-chest-nut text-white rounded-md cursor-not-allowed"
+              className="w-full py-3 disabled:bg-gray-300 bg-chest-nut text-white rounded-md disabled:cursor-not-allowed hover:bg-silver hover:text-white"
             >
               Checkout
             </button>
@@ -625,13 +625,13 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <button onClick={() => setIsSearchOpen(!isSearchOpen)}>
+            <button className="cursor-pointer" onClick={() => setIsSearchOpen(!isSearchOpen)}>
               <Search />
             </button>
             <div className="relative">
               <button
                 onClick={() => setIsCartOpen(!isCartOpen)}
-                className="relative"
+                className="relative cursor-pointer"
               >
                 <ShoppingCart />
               </button>

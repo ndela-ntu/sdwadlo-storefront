@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import IProduct from "@/models/product";
 import IProductVariant from "@/models/product-variant";
@@ -77,16 +77,26 @@ const initialState: CartEntry[] = [];
 interface CartProviderProps {
   children: ReactNode;
 }
-
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [cart, dispatch] = useReducer(cartReducer, initialState, () => {
-    if (typeof window !== "undefined") {
-      const localData = localStorage.getItem(STORAGE_KEY);
-      return localData ? JSON.parse(localData) : [];
-    }
-    return initialState;
-  });
+  const [cart, dispatch] = useReducer(cartReducer, initialState);
 
+  // Load from localStorage on client only
+  useEffect(() => {
+    const localData = localStorage.getItem(STORAGE_KEY);
+    if (localData) {
+      try {
+        const parsed = JSON.parse(localData);
+        // Replace state with localStorage data
+        parsed.forEach((entry: CartEntry) => {
+          dispatch({ type: "ADD_PRODUCT", payload: entry });
+        });
+      } catch (e) {
+        console.error("Failed to parse cart from localStorage", e);
+      }
+    }
+  }, []);
+
+  // Sync to localStorage whenever cart changes
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
   }, [cart]);
