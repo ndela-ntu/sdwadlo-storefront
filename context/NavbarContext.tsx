@@ -9,7 +9,7 @@ type NavbarDimensions = {
 };
 
 const NavbarContext = createContext({
-  dimensions: { paddingClass: 'pt-20 md:pt-28', heightPx: 64 },
+  dimensions: { paddingClass: 'pt-20 md:pt-24', heightPx: 76 },
   setDimensions: (dimensions: NavbarDimensions) => {}
 });
 
@@ -17,8 +17,8 @@ export const useNavbarContext = () => useContext(NavbarContext);
 
 export function NavbarProvider({ children }: { children: React.ReactNode }) {
   const [dimensions, setDimensions] = useState<NavbarDimensions>({
-    paddingClass: 'pt-16 md:pt-24', // Mobile first
-    heightPx: 64
+    paddingClass: 'pt-20 md:pt-24', // Mobile first
+    heightPx: 76
   });
   
   return (

@@ -143,8 +143,8 @@ const Navbar = () => {
     } else {
       setDimensions(
         isScrolled
-          ? { paddingClass: "pt-24", heightPx: 96 } // Slim desktop scrolled
-          : { paddingClass: "pt-28", heightPx: 112 } // Regular desktop
+          ? { paddingClass: "pt-24", heightPx: 76 } // Slim desktop scrolled
+          : { paddingClass: "pt-28", heightPx: 90 } // Regular desktop
       );
     }
   }, [isScrolled, isMobile]);
