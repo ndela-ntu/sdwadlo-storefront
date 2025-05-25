@@ -1,7 +1,7 @@
 // context/NavbarContext.tsx
 "use client";
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from "react";
 
 type NavbarDimensions = {
   paddingClass: string;
@@ -9,18 +9,18 @@ type NavbarDimensions = {
 };
 
 const NavbarContext = createContext({
-  dimensions: { paddingClass: 'pt-20 md:pt-24', heightPx: 76 },
-  setDimensions: (dimensions: NavbarDimensions) => {}
+  dimensions: { paddingClass: "pt-16", heightPx: 64 },
+  setDimensions: (dimensions: NavbarDimensions) => {},
 });
 
 export const useNavbarContext = () => useContext(NavbarContext);
 
 export function NavbarProvider({ children }: { children: React.ReactNode }) {
   const [dimensions, setDimensions] = useState<NavbarDimensions>({
-    paddingClass: 'pt-20 md:pt-24', // Mobile first
-    heightPx: 76
+    paddingClass: "pt-16",
+    heightPx: 64,
   });
-  
+
   return (
     <NavbarContext.Provider value={{ dimensions, setDimensions }}>
       {children}
