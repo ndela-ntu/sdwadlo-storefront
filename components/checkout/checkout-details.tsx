@@ -14,10 +14,11 @@ import {
 import { useItemTotals } from "@/context/ItemTotalsContext";
 import { supabase } from "@/utils/supabase";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import setOrAppendFormData from "@/lib/set-form-data";
 import { CheckoutState, saveCheckoutDetails } from "@/app/checkout-actions";
+import Link from "next/link";
 
 export default function CheckoutDetails() {
   const initialState: CheckoutState = {
@@ -86,6 +87,20 @@ export default function CheckoutDetails() {
       setTotal(subtotal + shippingCost);
     }
   }, [itemTotals, shippingCost]);
+
+  if (cart.length === 0) {
+    return (
+      <div className="flex flex-col items-center space-y-2.5">
+        <span>Looks like your cart is empty!</span>
+        <Link href="/products" className="flex items-center bg-chest-nut text-white p-2.5 rounded-lg">
+          <span>Continue Shopping</span>
+          <span>
+            <ArrowRight />
+          </span>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <form
@@ -276,7 +291,9 @@ export default function CheckoutDetails() {
           {loadingShippingCost ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <span>{total >= freeShipmentAmount ? "Free" : `R${shippingCost}`}</span>
+            <span>
+              {total >= freeShipmentAmount ? "Free" : `R${shippingCost}`}
+            </span>
           )}
         </div>
         <div className="flex items-center justify-between font-semibold text-lg">

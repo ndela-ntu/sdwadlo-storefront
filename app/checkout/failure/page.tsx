@@ -1,14 +1,18 @@
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function Page() {
   return (
-    <div className="flex flex-col">
-      <span>Failed to submit transaction. Please try again</span>
+    <div className="flex flex-col items-center justify-center w-full pt-5 space-y-2.5">
+      <span>Failed to complete transaction. Please try again.</span>
       <Link
-        className="p-2.5 bg-chest-nut rounded-lg text-white"
+        className="flex items-center p-2.5 bg-chest-nut rounded-lg text-white"
         href="/checkout"
       >
-        Checkout
+        <span>Checkout</span>
+        <span>
+          <ArrowRight className="h-6 w-6" />
+        </span>
       </Link>
     </div>
   );

@@ -137,14 +137,14 @@ const Navbar = () => {
     if (isMobile) {
       setDimensions(
         isScrolled
-          ? { paddingClass: "pt-14", heightPx: 56 } // Slim mobile scrolled
-          : { paddingClass: "pt-16", heightPx: 64 } // Regular mobile
+          ? { paddingClass: "pt-[56px]", heightPx: 56 } // Slim mobile scrolled
+          : { paddingClass: "pt-[56px]", heightPx: 56 } // Regular mobile
       );
     } else {
       setDimensions(
         isScrolled
-          ? { paddingClass: "pt-16", heightPx: 64 } // Slim desktop scrolled
-          : { paddingClass: "pt-16", heightPx: 64 } // Regular desktop
+          ? { paddingClass: "pt-[84px]", heightPx: 68 } // Slim desktop scrolled
+          : { paddingClass: "pt-[84px]", heightPx: 68 } // Regular desktop
       );
     }
   }, [isScrolled, isMobile]);
@@ -720,8 +720,8 @@ const Navbar = () => {
               />
             )}
           </div>
-          <div className="flex items-center justify-center bg-chest-nut text-white text-sm">
-            Free delivery on orders over: R{freeShipmentAmount}
+          <div className="flex items-center justify-center bg-chest-nut text-white text-sm md:text-base">
+            Free shipping on orders over R{freeShipmentAmount}
           </div>
         </div>
       </nav>
