@@ -1,7 +1,7 @@
 "use client";
 
 import { NavbarProvider, useNavbarContext } from "@/context/NavbarContext";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Navbar from "./navbar";
 import { Toaster } from "sonner";
 import Link from "next/link";
@@ -9,6 +9,14 @@ import { CartProvider } from "@/context/CartContext";
 import { ItemTotalsProvider } from "@/context/ItemTotalsContext";
 
 export default function LayoutProvider({ children }: { children: ReactNode }) {
+  const [isScrolled, setIsScrolled] = useState(false);
+  
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <CartProvider>
       <ItemTotalsProvider>
@@ -16,7 +24,7 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
           <div className="min-h-screen flex flex-col">
             <Navbar />
             <main
-              className={`${useNavbarContext().dimensions.paddingClass} flex-1`}
+              className={`pt-20 ${isScrolled ? 'pt-16' : 'pt-20'}`}
             >
               {children}
               <Toaster richColors />

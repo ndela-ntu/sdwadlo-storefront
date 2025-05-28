@@ -137,14 +137,14 @@ const Navbar = () => {
     if (isMobile) {
       setDimensions(
         isScrolled
-          ? { paddingClass: "pt-[56px]", heightPx: 56 } // Slim mobile scrolled
-          : { paddingClass: "pt-[56px]", heightPx: 56 } // Regular mobile
+          ? { paddingClass: "pt-[172px]", heightPx: 74 } // Slim mobile scrolled
+          : { paddingClass: "pt-[172px]", heightPx: 74 } // Regular mobile
       );
     } else {
       setDimensions(
         isScrolled
-          ? { paddingClass: "pt-[84px]", heightPx: 68 } // Slim desktop scrolled
-          : { paddingClass: "pt-[84px]", heightPx: 68 } // Regular desktop
+          ? { paddingClass: "pt-[84px]", heightPx: 84 } // Slim desktop scrolled
+          : { paddingClass: "pt-[84px]", heightPx: 84 } // Regular desktop
       );
     }
   }, [isScrolled, isMobile]);
@@ -550,13 +550,13 @@ const Navbar = () => {
       )}
 
       <nav
-        className={`fixed w-full z-50 transition-all duration-300 ${
-          isScrolled ? "bg-white shadow-md py-2" : "bg-white/90 py-4"
-        }`}
-        style={{ height: `${dimensions.heightPx}px` }}
+        className={`
+      fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-sm
+      h-20 ${isScrolled ? "h-16" : "h-20"}
+    `}
       >
-        <div className="flex flex-col w-full">
-          <div className="px-4 md:px-8 lg:px-16 flex justify-between items-center">
+        <div className="flex flex-col w-full h-full">
+          <div className="px-4 md:px-8 lg:px-16 flex justify-between items-center h-full">
             <div className="flex items-center">
               <Link href="/">
                 <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
