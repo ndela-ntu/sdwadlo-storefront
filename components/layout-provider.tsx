@@ -10,11 +10,11 @@ import { ItemTotalsProvider } from "@/context/ItemTotalsContext";
 
 export default function LayoutProvider({ children }: { children: ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
-  
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -23,9 +23,7 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
         <NavbarProvider>
           <div className="min-h-screen flex flex-col">
             <Navbar />
-            <main
-              className={`pt-20 ${isScrolled ? 'pt-16' : 'pt-20'}`}
-            >
+            <main className={`pt-20 ${isScrolled ? "pt-16" : "pt-20"}`}>
               {children}
               <Toaster richColors />
             </main>
@@ -91,17 +89,14 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
                     </nav>
                   </div>
 
-                  {/* Additional footer columns can be added here */}
-                  <div className="md:col-span-2">
-                    {/* Placeholder for additional content like newsletter signup */}
+                  {/* <div className="md:col-span-2">
                     <h3 className="text-lg font-bold underline decoration-chest-nut decoration-2 underline-offset-4 mb-4">
                       Stay Connected
                     </h3>
                     <p className="text-sm text-gray-700">
                       Follow us on social media for updates and promotions.
                     </p>
-                    {/* Social media icons could be added here */}
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="border-t border-gray-300 pt-6">
