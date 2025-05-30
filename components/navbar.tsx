@@ -563,6 +563,44 @@ const Navbar = () => {
         />
       )}
 
+      <div
+        className={`mobile-menu fixed inset-y-0 left-0 w-64 bg-white transform ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        } md:hidden transition-transform duration-300 ease-in-out z-[9999] overflow-y-auto`}
+      >
+        <div className="flex flex-col p-2 space-y-4">
+          <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
+            SDWADLO.CO
+          </h1>
+          {navItems.map((item) =>
+            item.href ? (
+              <Link
+                key={item.name}
+                className={`transition hover:text-chest-nut text-lg max-w-fit ${
+                  isActive(item.href) &&
+                  "border-b-2 border-chest-nut text-chest-nut font-bold"
+                }`}
+                href={item.href}
+                onClick={handleLinkClick}
+              >
+                {item.name}
+              </Link>
+            ) : (
+              <div key={item.name} className="w-full text-lg">
+                {renderMobileSection(item.name)}
+              </div>
+            )
+          )}
+        </div>
+      </div>
+
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
+
       <nav
         className={`
       fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-sm
@@ -689,50 +727,6 @@ const Navbar = () => {
                 {isMenuOpen ? <X /> : <Menu />}
               </button>
             </div>
-
-            {/* Mobile Menu */}
-            <div
-              className={`mobile-menu fixed inset-y-0 left-0 w-64 bg-white transform ${
-                isMenuOpen ? "translate-x-0" : "-translate-x-full"
-              } md:hidden transition-transform duration-300 ease-in-out z-50 overflow-y-auto`}
-            >
-              <div className="flex flex-col p-2 space-y-4">
-                <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
-                  SDWADLO.CO
-                </h1>
-                {navItems.map((item) => {
-                  if (item.href) {
-                    return (
-                      <Link
-                        key={item.name}
-                        className={`transition hover:text-chest-nut text-lg max-w-fit ${
-                          isActive(item.href) &&
-                          "border-b-2 border-chest-nut text-chest-nut font-bold"
-                        }`}
-                        href={item.href}
-                        onClick={handleLinkClick}
-                      >
-                        {item.name}
-                      </Link>
-                    );
-                  } else {
-                    return (
-                      <div key={item.name} className="w-full text-lg">
-                        {renderMobileSection(item.name)}
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-            </div>
-
-            {/* Overlay */}
-            {isMenuOpen && (
-              <div
-                className="fixed inset-0 bg-black/50 z-40 md:hidden"
-                onClick={() => setIsMenuOpen(false)}
-              />
-            )}
           </div>
           <div className="flex items-center justify-center bg-chest-nut text-white text-sm md:text-base">
             Free shipping on orders over R{freeShipmentAmount}
