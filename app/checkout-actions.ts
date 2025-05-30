@@ -21,7 +21,7 @@ const CheckoutSchema = z.object({
   streetAddress: z.string().min(5, "Address must be at least 5 characters"),
   town: z.string().min(2, "City must be at least 2 characters"),
   province: z.string().min(2, "A province is required"),
-  postalCode: z.string().min(2, "Zip code must be at least 2 characters"),
+  postalCode: z.number().min(2, "Zip code must be at least 2 number"),
   items: z.array(ItemSchema).nonempty("At least one item is required"),
   total: z.number().positive("Total must be a positive number"),
 });
@@ -62,7 +62,7 @@ export async function saveCheckoutDetails(
     };
   }
 
-  let redirectUrl = '/checkout/failure';
+  let redirectUrl = "/checkout/failure";
 
   try {
     const {
@@ -91,12 +91,86 @@ export async function saveCheckoutDetails(
       total,
     };
 
-  }catch(error) {
-    return <CheckoutState>{
-      message: 'An unexpected error occurred',
-      errors: [],
+    const result = await checkWHExists();
+    if (!result.hookExists) {
+      const mode = await registerWebhook();
+
+      if (mode === "test" || mode === "live") {
+        const response = await handleCheckout(metadata);
+        redirectUrl = response.redirectUrl;
+      } else {
+        throw new Error("Unable to register webhook");
+      }
+    } else {
+      const response = await handleCheckout(metadata);
+      redirectUrl = response.redirectUrl;
     }
+  } catch (error: any) {
+    return <CheckoutState>{
+      message: "An unexpected error occurred",
+      errors: [],
+    };
   }
-  
+
   redirect(redirectUrl);
 }
+
+const BASE_URL = "https://sdwadlo.vercel.app";
+const LOCAL_URL = "https://localhost:3000";
+
+const checkWHExists = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/ListWebhooks`, {
+      method: "GET",
+    });
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const registerWebhook = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/RegisterWebhook`, {
+      method: "POST",
+    });
+
+    const data = await response.json();
+
+    return data.mode;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const handleCheckout = async (metadata: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  streetAddress: string;
+  town: string;
+  postalCode: number;
+  province: string;
+  items: { id: number; total: number; quantity: number }[];
+  total: number;
+}) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/CreateCheckout`, {
+      method: "POST",
+      body: JSON.stringify({
+        amount: metadata.total * 100,
+        currency: "ZAR",
+        metadata,
+      }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
