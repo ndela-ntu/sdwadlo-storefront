@@ -16,11 +16,11 @@ export default function SuccessPage() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full pt-5 space-y-2.5">
+    <div className="flex flex-col items-center justify-center w-full py-10 space-y-2.5">
       <div className="flex items-center space-x-2.5">
         <span>Your order has been successfully placed</span>
-        <span className="text-white bg-chest-nut p-2.5 rounded-full">
-          <Check className="h-6 w-6" />
+        <span className="text-white bg-chest-nut p-2 rounded-full">
+          <Check className="h-5 w-5" />
         </span>
       </div>
       <Link

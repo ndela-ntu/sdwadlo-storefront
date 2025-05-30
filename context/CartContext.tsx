@@ -15,13 +15,15 @@ const STORAGE_KEY = "sdwadlo:cart";
 interface CartEntry {
   product: IProduct;
   variant: IProductVariant;
+  quantity: number;
 }
 
 interface CartState {
   cart: CartEntry[];
-  addProduct: (product: IProduct, variant: IProductVariant) => void;
+  addProduct: (product: IProduct, variant: IProductVariant, quantity?: number) => void;
   removeProduct: (productId: number, variantId: number) => void;
   clearCart: () => void;
+  updateQuantity: (productId: number, variantId: number, quantity: number) => void;
 }
 
 type Action =
@@ -30,7 +32,11 @@ type Action =
       type: "REMOVE_PRODUCT";
       payload: { productId: number; variantId: number };
     }
-  | { type: "CLEAR_CART" };
+  | { type: "CLEAR_CART" }
+  | {
+      type: "UPDATE_QUANTITY";
+      payload: { productId: number; variantId: number; quantity: number };
+    };
 
 const CartContext = createContext<CartState | undefined>(undefined);
 
@@ -47,14 +53,11 @@ const cartReducer = (state: CartEntry[], action: Action): CartEntry[] => {
         const updatedCart = [...state];
         updatedCart[existingEntryIndex] = {
           ...updatedCart[existingEntryIndex],
-          variant: {
-            ...updatedCart[existingEntryIndex].variant,
-          },
+          quantity: updatedCart[existingEntryIndex].quantity + (action.payload.quantity || 1),
         };
-
         return updatedCart;
       } else {
-        return [...state, action.payload];
+        return [...state, { ...action.payload, quantity: action.payload.quantity || 1 }];
       }
     }
     case "REMOVE_PRODUCT":
@@ -67,6 +70,20 @@ const cartReducer = (state: CartEntry[], action: Action): CartEntry[] => {
       );
     case "CLEAR_CART":
       return [];
+    case "UPDATE_QUANTITY": {
+      return state.map((entry) => {
+        if (
+          entry.product.id === action.payload.productId &&
+          entry.variant.id === action.payload.variantId
+        ) {
+          return {
+            ...entry,
+            quantity: action.payload.quantity,
+          };
+        }
+        return entry;
+      });
+    }
     default:
       return state;
   }
@@ -88,7 +105,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         const parsed = JSON.parse(localData);
         // Replace state with localStorage data
         parsed.forEach((entry: CartEntry) => {
-          dispatch({ type: "ADD_PRODUCT", payload: entry });
+          dispatch({ 
+            type: "ADD_PRODUCT", 
+            payload: { 
+              product: entry.product, 
+              variant: entry.variant, 
+              quantity: entry.quantity 
+            } 
+          });
         });
       } catch (e) {
         console.error("Failed to parse cart from localStorage", e);
@@ -101,8 +125,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
   }, [cart]);
 
-  const addProduct = (product: IProduct, variant: IProductVariant) => {
-    dispatch({ type: "ADD_PRODUCT", payload: { product, variant } });
+  const addProduct = (product: IProduct, variant: IProductVariant, quantity: number = 1) => {
+    dispatch({ 
+      type: "ADD_PRODUCT", 
+      payload: { product, variant, quantity } 
+    });
   };
 
   const removeProduct = (productId: number, variantId: number) => {
@@ -111,9 +138,22 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   const clearCart = () => dispatch({ type: "CLEAR_CART" });
 
+  const updateQuantity = (productId: number, variantId: number, quantity: number) => {
+    dispatch({ 
+      type: "UPDATE_QUANTITY", 
+      payload: { productId, variantId, quantity } 
+    });
+  };
+
   return (
     <CartContext.Provider
-      value={{ cart, addProduct, removeProduct, clearCart }}
+      value={{ 
+        cart, 
+        addProduct, 
+        removeProduct, 
+        clearCart, 
+        updateQuantity 
+      }}
     >
       {children}
     </CartContext.Provider>

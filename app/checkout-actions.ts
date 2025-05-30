@@ -3,6 +3,24 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+ const southAfricanProvinces = [
+  "Eastern Cape",
+  "Free State",
+  "Gauteng",
+  "KwaZulu-Natal",
+  "Limpopo",
+  "Mpumalanga",
+  "Northern Cape",
+  "North West",
+  "Western Cape",
+] as const;
+
+const provinceSchema = z.enum(southAfricanProvinces, {
+  errorMap: (issue, ctx) => {
+    return { message: "Please select a valid province" };
+  },
+});
+
 const ItemSchema = z.object({
   id: z.number(),
   total: z.number().positive(),
@@ -22,7 +40,7 @@ const CheckoutSchema = z.object({
   ),
   streetAddress: z.string().min(5, "Address must be at least 5 characters"),
   town: z.string().min(2, "City must be at least 2 characters"),
-  province: z.string().min(2, "A province is required"),
+  province: provinceSchema,
   postalCode: z.number().min(2, "Zip code must be at least 2 number"),
   items: z.array(ItemSchema).nonempty("At least one item is required"),
   total: z.number().positive("Total must be a positive number"),
@@ -58,6 +76,8 @@ export async function saveCheckoutDetails(
     items: JSON.parse(formData.get("items") as string),
     total: parseFloat(formData.get("total") as string),
   });
+
+  console.log(formData.get("province"));
 
   if (!validatedFields.success) {
     console.log(validatedFields.error.flatten().fieldErrors);

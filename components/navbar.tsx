@@ -61,7 +61,7 @@ const Navbar = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const { dimensions, setDimensions } = useNavbarContext();
   const [isMobile, setIsMobile] = useState(false);
-  const { cart, removeProduct } = useCart();
+  const { cart, removeProduct, updateQuantity } = useCart();
   const { itemTotals, addItemTotal, removeItemTotal, clearItemTotals } =
     useItemTotals();
   const [total, setTotal] = useState<number>(0);
@@ -88,11 +88,19 @@ const Navbar = () => {
   }, [cart]);
 
   useEffect(() => {
-    clearItemTotals();
-    cart.forEach((entry) => {
-      addItemTotal({ id: entry.variant.id, total: entry.product.price });
-    });
+    if (cart.length > 0) {
+      clearItemTotals();
 
+      cart.forEach((entry) => {
+        addItemTotal({
+          id: entry.variant.id,
+          total: entry.product.price * entry.quantity,
+        });
+      });
+    }
+  }, [cart]);
+
+  useEffect(() => {
     const fetchFreeShipmentAmount = async () => {
       try {
         const { data, error } = await supabase
@@ -502,9 +510,15 @@ const Navbar = () => {
                       )}
                     </div>
                     <QuantitySelector
+                      initialQuantity={entry.quantity}
                       maxQuantity={entry.variant.quantity}
                       onChangeCB={(value) => {
                         updateTotal(entry.variant.id, value);
+                        updateQuantity(
+                          entry.product.id,
+                          entry.variant.id,
+                          value
+                        );
                       }}
                     />
                     <button

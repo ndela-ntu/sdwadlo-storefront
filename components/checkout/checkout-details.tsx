@@ -38,9 +38,20 @@ export default function CheckoutDetails() {
     useState<boolean>(false);
   const [freeShipmentAmount, setFreeShipmentAmount] = useState<number>(0);
 
+  // Form state controllers
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
+  const [town, setTown] = useState("");
+  const [province, setProvince] = useState<string | undefined>(undefined);
+  const [postalCode, setPostalCode] = useState("");
+
   const handleOnProvinceChange = async (value: string) => {
     try {
       setLoadingShippingCose(true);
+      setProvince(value);
 
       const { data, error } = await supabase
         .from("shipping_by_province")
@@ -92,7 +103,10 @@ export default function CheckoutDetails() {
     return (
       <div className="flex flex-col items-center space-y-2.5 py-10">
         <span>Looks like your cart is empty!</span>
-        <Link href="/products" className="flex items-center bg-chest-nut text-white p-2.5 rounded-lg">
+        <Link
+          href="/products"
+          className="flex items-center bg-chest-nut text-white p-2.5 rounded-lg"
+        >
           <span>Continue Shopping</span>
           <span>
             <ArrowRight />
@@ -148,7 +162,11 @@ export default function CheckoutDetails() {
             <label className="text-sm md:text-base" htmlFor="firstName">
               First Name
             </label>
-            <Input name="firstName" />
+            <Input
+              name="firstName"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
             <div id="name-error" aria-live="polite" aria-atomic="true">
               {state.errors?.firstName &&
                 state.errors.firstName.map((error: string, i) => (
@@ -162,7 +180,11 @@ export default function CheckoutDetails() {
             <label className="text-sm md:text-base" htmlFor="lastName">
               Last Name
             </label>
-            <Input name="lastName" />
+            <Input
+              name="lastName"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
             <div id="name-error" aria-live="polite" aria-atomic="true">
               {state.errors?.lastName &&
                 state.errors.lastName.map((error: string, i) => (
@@ -178,7 +200,12 @@ export default function CheckoutDetails() {
             <label className="text-sm md:text-base" htmlFor="email">
               Email
             </label>
-            <Input name="email" type="email" />
+            <Input
+              name="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
             <div id="name-error" aria-live="polite" aria-atomic="true">
               {state.errors?.email &&
                 state.errors.email.map((error: string, i) => (
@@ -192,7 +219,12 @@ export default function CheckoutDetails() {
             <label className="text-sm md:text-base" htmlFor="phoneNumber">
               Phone Number
             </label>
-            <Input name="phoneNumber" type="tel" />
+            <Input
+              name="phoneNumber"
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
             <div id="name-error" aria-live="polite" aria-atomic="true">
               {state.errors?.phoneNumber &&
                 state.errors.phoneNumber.map((error: string, i) => (
@@ -210,7 +242,11 @@ export default function CheckoutDetails() {
           <label className="text-sm md:text-base" htmlFor="streetAddress">
             Street Address
           </label>
-          <Input name="streetAddress" />
+          <Input
+            name="streetAddress"
+            value={streetAddress}
+            onChange={(e) => setStreetAddress(e.target.value)}
+          />
           <div id="name-error" aria-live="polite" aria-atomic="true">
             {state.errors?.streetAddress &&
               state.errors.streetAddress.map((error: string, i) => (
@@ -224,7 +260,11 @@ export default function CheckoutDetails() {
           <label className="text-sm md:text-base" htmlFor="town">
             Town/City
           </label>
-          <Input name="town" />
+          <Input
+            name="town"
+            value={town}
+            onChange={(e) => setTown(e.target.value)}
+          />
           <div id="name-error" aria-live="polite" aria-atomic="true">
             {state.errors?.town &&
               state.errors.town.map((error: string, i) => (
@@ -238,7 +278,11 @@ export default function CheckoutDetails() {
           <label className="text-sm md:text-base" htmlFor="province">
             Province
           </label>
-          <Select name="province" onValueChange={handleOnProvinceChange}>
+          <Select
+            name="province"
+            value={province}
+            onValueChange={handleOnProvinceChange}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a province" />
             </SelectTrigger>
@@ -276,7 +320,12 @@ export default function CheckoutDetails() {
           <label className="text-sm md:text-base" htmlFor="postalCode">
             Postal Code
           </label>
-          <Input name="postalCode" type="number" />
+          <Input
+            name="postalCode"
+            type="number"
+            value={postalCode}
+            onChange={(e) => setPostalCode(e.target.value)}
+          />
           <div id="name-error" aria-live="polite" aria-atomic="true">
             {state.errors?.postalCode &&
               state.errors.postalCode.map((error: string, i) => (

@@ -1,19 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export default function QuantitySelector({
   maxQuantity,
   onChangeCB,
+  initialQuantity = 1,
 }: {
   maxQuantity: number;
-  onChangeCB: (quantity: number) => void;
+  onChangeCB?: (quantity: number) => void;
+  initialQuantity?: number;
 }) {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(initialQuantity);
+  const prevQuantityRef = useRef(quantity);
 
   useEffect(() => {
-    onChangeCB(quantity);
-  }, [quantity])
+    if (prevQuantityRef.current !== quantity && onChangeCB) {
+      onChangeCB(quantity);
+      prevQuantityRef.current = quantity;
+    }
+  }, [quantity, onChangeCB]);
 
   const incrementQuantity = () => {
     if (quantity < maxQuantity) {
