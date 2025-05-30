@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
- const southAfricanProvinces = [
+const southAfricanProvinces = [
   "Eastern Cape",
   "Free State",
   "Gauteng",
@@ -113,6 +113,16 @@ export async function saveCheckoutDetails(
       items,
       total,
     };
+
+    // await fetch(
+    //   "https://sdwadlo.vercel.app/api/DeleteWebhook",
+    //   {
+    //     method: "DELETE",
+    //     body: JSON.stringify({
+    //       id: "sub_QLOBGy56Q1VubYbC6XwIjAxb",
+    //     }),
+    //   }
+    // );
 
     const result = await checkWHExists();
     if (!result.hookExists) {
