@@ -4,16 +4,24 @@ import { useCart } from "@/context/CartContext";
 import { useItemTotals } from "@/context/ItemTotalsContext";
 import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function SuccessPage() {
   const { clearCart } = useCart();
   const { clearItemTotals } = useItemTotals();
+  const [isCleared, setIsCleared] = useState(false);
 
   useEffect(() => {
-    clearCart();
-    clearItemTotals();
-  }, []);
+    if (!isCleared) {
+      console.log('Clearing cart and item totals');
+      clearCart();
+      clearItemTotals();
+      setIsCleared(true);
+      
+      localStorage.removeItem("sdwadlo:cart");
+      localStorage.removeItem("sdwadlo:itemTotals");
+    }
+  }, [clearCart, clearItemTotals, isCleared]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full py-10 space-y-2.5">
@@ -25,12 +33,10 @@ export default function SuccessPage() {
       </div>
       <Link
         href="/products"
-        className="text-white flex items-center bg-chest-nut p-2.5 rounded-lg"
+        className="text-white flex items-center bg-chest-nut p-2.5 rounded-lg hover:bg-chest-nut-dark transition-colors"
       >
         <span>Continue Shopping</span>
-        <span>
-          <ArrowRight className="h-6 w-6" />
-        </span>
+        <ArrowRight className="h-6 w-6 ml-2" />
       </Link>
     </div>
   );

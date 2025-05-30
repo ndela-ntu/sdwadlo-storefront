@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     if (body.payload.status === "succeeded") {
+      console.log("Succeeded");
       const metadata = body.payload.metadata;
       const itemsArray: { id: number; total: number; quantity: number }[] =
         metadata.items;
@@ -46,23 +47,36 @@ export async function POST(req: NextRequest) {
           throw new Error(`Item with id: ${item.id} not found`);
         }
 
-        orderedVariants.push({...variant, quantity: item.quantity});
+        orderedVariants.push({ ...variant, quantity: item.quantity });
 
-        const quantity = variant.quantity > 0 ? variant.quantity - item.quantity : 0;
+        console.log("Route1:", variant);
 
-        await supabase.from('product_variant').update({quantity}).eq("id", item.id);
+        const quantity =
+          variant.quantity > 0 ? variant.quantity - item.quantity : 0;
 
-        await sendConfirmationEmail(metadata.email, orderedVariants, metadata.total);
+        await supabase
+          .from("product_variant")
+          .update({ quantity })
+          .eq("id", item.id);
       }
+
+      console.log("Route2:", orderedVariants);
+
+      await sendConfirmationEmail(
+        metadata.email,
+        orderedVariants,
+        metadata.total
+      );
+
       return NextResponse.json({
         status: "success",
         message: "Payment processed and checkout details submitted",
       });
     }
     return NextResponse.json(
-        { status: "ignored", message: "Event ignored" },
-        { status: 400 }
-      );
+      { status: "ignored", message: "Event ignored" },
+      { status: 400 }
+    );
   } catch (error) {
     throw error;
   }
