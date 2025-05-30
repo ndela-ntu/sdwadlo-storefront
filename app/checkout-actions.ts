@@ -128,6 +128,7 @@ export async function saveCheckoutDetails(
       const response = await handleCheckout(metadata);
       redirectUrl = response.redirectUrl;
     }
+    console.log(result, redirectUrl);
   } catch (error: any) {
     return <CheckoutState>{
       message: "An unexpected error occurred",
