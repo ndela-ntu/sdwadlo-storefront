@@ -77,8 +77,6 @@ export async function saveCheckoutDetails(
     total: parseFloat(formData.get("total") as string),
   });
 
-  console.log(formData.get("province"));
-
   if (!validatedFields.success) {
     console.log(validatedFields.error.flatten().fieldErrors);
     return <CheckoutState>{

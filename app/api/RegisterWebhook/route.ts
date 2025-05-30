@@ -15,6 +15,7 @@ export async function POST() {
     });
 
     const data = await response.json();
+    console.log(data);
 
     return NextResponse.json({mode: data.mode});
   } catch (error) {
