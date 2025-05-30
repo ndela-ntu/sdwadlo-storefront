@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
         currency,
         metadata,
         cancelUrl: "https://sdwadlo.vercel.app/checkout",
-        successUrl: "https://swadlo.vercel.app/checkout/success",
+        successUrl: "https://sdwadlo.vercel.app/checkout/success",
         failureUrl: "https://sdwadlo.vercel.app/checkout/failure",
       }),
     });

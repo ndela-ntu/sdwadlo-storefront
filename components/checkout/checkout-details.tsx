@@ -90,7 +90,7 @@ export default function CheckoutDetails() {
 
   if (cart.length === 0) {
     return (
-      <div className="flex flex-col items-center space-y-2.5">
+      <div className="flex flex-col items-center space-y-2.5 py-10">
         <span>Looks like your cart is empty!</span>
         <Link href="/products" className="flex items-center bg-chest-nut text-white p-2.5 rounded-lg">
           <span>Continue Shopping</span>
@@ -132,7 +132,9 @@ export default function CheckoutDetails() {
 
         formData.forEach((value, key) => {
           console.log(key, value);
-        }); //formAction(formData);
+        });
+
+        formAction(formData);
       }}
       className="flex flex-col w-full md:w-[30%] space-y-2.5 p-2.5"
     >
@@ -307,7 +309,7 @@ export default function CheckoutDetails() {
             className="flex items-center justify-center bg-chest-nut text-white px-2.5 py-2 rounded-lg w-full"
           >
             {pending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
               "Complete Checkout"
             )}

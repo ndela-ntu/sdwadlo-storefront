@@ -1,3 +1,5 @@
+'use server';
+
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -52,10 +54,13 @@ export async function saveCheckoutDetails(
     streetAddress: formData.get("streetAddress"),
     town: formData.get("town"),
     province: formData.get("province"),
-    postalCode: formData.get("postalCode"),
+    postalCode: Number(formData.get("postalCode")),
+    items: JSON.parse(formData.get("items") as string),
+    total: parseFloat(formData.get("total") as string),
   });
 
   if (!validatedFields.success) {
+    console.log(validatedFields.error.flatten().fieldErrors);
     return <CheckoutState>{
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Missed fields, failed to create checkout.",

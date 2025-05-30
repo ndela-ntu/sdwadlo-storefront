@@ -10,7 +10,10 @@ export default function SuccessPage() {
   const { clearCart } = useCart();
   const { clearItemTotals } = useItemTotals();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    clearCart();
+    clearItemTotals();
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center w-full pt-5 space-y-2.5">
