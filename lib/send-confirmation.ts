@@ -1,7 +1,7 @@
 import IProductVariant from "@/models/product-variant";
 import nodemailer from "nodemailer";
 
-export default async function sendConfirmationEmail(email: string, orderedVariants: (IProductVariant & { quantity: number})[], amount: number) {
+export default async function sendConfirmationEmail(id: number, email: string, orderedVariants: (IProductVariant & { quantity: number})[], amount: number) {
     const transporter = nodemailer.createTransport({
         service: "Gmail",
         host: 'smtp.gmail.com',
@@ -16,14 +16,14 @@ export default async function sendConfirmationEmail(email: string, orderedVarian
     const mailOptions1 = {
         from: process.env.EMAIL_USER,
         to: email,
-        subject: "Payment Confirmation",
+        subject: `Payment Confirmation. Order no. ${id}`,
         html: generateOrderEmail(orderedVariants ?? [], false, amount),
     };
 
     const mailOptions2 = {
         from: process.env.EMAIL_USER,
         to: "ntulilindelani4@gmail.com",
-        subject: "Order Submitted",
+        subject: `Order Submitted. Order no. ${id}`,
         html: generateOrderEmail(orderedVariants ?? [], true, amount),
     };
 

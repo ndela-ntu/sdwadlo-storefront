@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
           total: metadata.total,
           status: "PENDING",
         })
-        .select("id");
+        .select("id").single();
 
       if (error) {
         throw new Error(error.message);
@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
       console.log("Route2:", orderedVariants);
 
       await sendConfirmationEmail(
+        data.id,
         metadata.email,
         orderedVariants,
         metadata.total
