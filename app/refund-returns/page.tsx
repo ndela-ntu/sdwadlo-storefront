@@ -4,7 +4,7 @@ export default function Page() {
       <h1 className="text-2xl font-bold mb-4">Return Policy</h1>
 
       <p className="text-base mb-4">
-        At <strong>SDWADLO.CO</strong>, your satisfaction is our priority. If
+        At <strong>SDWADLO</strong>, your satisfaction is our priority. If
         you're not completely happy with your purchase, you may return your
         item(s) within <strong>14 days of receipt</strong> for a refund or
         exchange.

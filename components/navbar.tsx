@@ -570,7 +570,7 @@ const Navbar = () => {
       >
         <div className="flex flex-col p-2 space-y-4">
           <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
-            SDWADLO.CO
+            SDWADLO
           </h1>
           {navItems.map((item) =>
             item.href ? (
@@ -612,7 +612,7 @@ const Navbar = () => {
             <div className="flex items-center">
               <Link href="/">
                 <h1 className="text-eerieBlack text-2xl md:text-3xl lg:text-4xl pb-1 font-black italic">
-                  SDWADLO.CO
+                  SDWADLO
                 </h1>
               </Link>
               <div className="hidden md:flex md:items-center space-x-8 md:ml-8 md:text-xl">

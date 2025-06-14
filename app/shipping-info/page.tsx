@@ -34,7 +34,7 @@ export default function Page() {
 
       <p className="text-base mb-4">
         <em>
-          SDWADLO.CO is not responsible for items lost, damaged, or stolen in
+          SDWADLO is not responsible for items lost, damaged, or stolen in
           transit. Please note that parcels are not shipped as insured.
         </em>
       </p>

@@ -62,18 +62,21 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col md:flex-row md:space-x-2.5 md:space-y-none w-full">
+      <div className="flex flex-col md:flex-row md:space-y-none w-full">
         <div className="flex flex-col md:space-y-0 w-full">
-          <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white w-full max-h-fit">
+          <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white w-full max-h-fit w-full">
             <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5">
               Shop by Category
             </span>
             <div className="grid grid-cols-2 gap-2.5 md:gap-5">
               {categories.map((category, index) => (
-                <div key={category.id} className={`h-48 md:h-96`}>
+                <div
+                  key={category.id}
+                  className={`aspect-square md:w-full md:h-full`}
+                >
                   <ItemsCard
                     item={{ ...category, type: "Category" }}
-                    className="w-full h-full"
+                    className={`w-full h-full`}
                   />
                 </div>
               ))}
@@ -96,7 +99,7 @@ export default async function Home() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col p-2.5 md:p-5 bg-chest-nut text-white max-h-fit md:w-[30%]">
+        <div className="flex flex-col p-2.5 md:p-5 bg-chest-nut text-white max-h-fit md:w-[30%] md:pb-14">
           <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5 ">
             Featured Brands
           </span>

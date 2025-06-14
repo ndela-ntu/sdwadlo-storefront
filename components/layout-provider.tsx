@@ -101,7 +101,7 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
 
                 <div className="border-t border-gray-300 pt-6">
                   <p className="text-gray-600 text-xs md:text-sm text-center">
-                    © {new Date().getFullYear()} SDWADLO.CO. All rights reserved
+                    © {new Date().getFullYear()} SDWADLO. All rights reserved
                   </p>
                 </div>
               </div>
