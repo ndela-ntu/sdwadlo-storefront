@@ -23,7 +23,7 @@ export async function GET() {
       for (let i = 1; i < existingWebhooks.length; i++) {
         const sub = existingWebhooks[i];
         try {
-          const response = await fetch("https://sdwadlo.vercel.app/api/DeleteWebhook", {
+          const response = await fetch("https://sdwadlo.shop/api/DeleteWebhook", {
             method: "DELETE",
             body: JSON.stringify({
               id: sub.id,
