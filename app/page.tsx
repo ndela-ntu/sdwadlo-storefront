@@ -7,6 +7,21 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+// app/page.tsx
+export const metadata = {
+  title: 'Sdwadlo - The Home of Kasi Brands',
+  description: 'Shop the our proudly Kasi brands at Sdwadlo. Affordable styles for everyone.',
+  keywords: 'clothing, fashion, shop, online store, sdwadlo',
+  openGraph: {
+    title: 'Sdwadlo Shop',
+    description: 'Discover trendy and affordable fashion.',
+    url: 'https://sdwadlo.shop',
+    siteName: 'Sdwadlo',
+    type: 'website',
+  },
+};
+
+
 export default async function Home() {
   const { data: brands, error: brandsError } = await supabase
     .from("brand")
@@ -64,7 +79,7 @@ export default async function Home() {
     <div className="flex flex-col">
       <div className="flex flex-col md:flex-row md:space-y-none w-full">
         <div className="flex flex-col md:space-y-0 w-full">
-          <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white w-full max-h-fit w-full">
+          <div className="flex flex-col p-2.5 md:p-5 bg-eerie-black text-white max-h-fit w-full">
             <span className="text-lg md:text-2xl font-bold pb-2.5 md:pb-5">
               Shop by Category
             </span>
