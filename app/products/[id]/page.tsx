@@ -1,7 +1,54 @@
 import ProductCard from "@/components/product-card";
 import PreviewProduct from "@/components/products/preview-product";
+import IProduct from "@/models/product";
 import { supabase } from "@/utils/supabase";
 import { ChevronRight } from "lucide-react";
+
+async function getProduct(id: number): Promise<IProduct | null> {
+  const { data: product } = await supabase
+    .from("product")
+    .select(
+      `*, product_variant(
+      *,
+      size(*),
+      color(*),
+      product(*)
+    )`
+    )
+    .eq("id", id)
+    .single();
+
+  return product;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const awaitedParams = await params;
+  const product = await getProduct(parseInt(awaitedParams.id));
+
+  if (product) {
+    return {
+      title: product.name,
+      description: product.description,
+      openGraph: {
+        title: product.name,
+        description: product.description,
+        images: [product.product_variant.length && product.product_variant[0].image_urls],
+        url: `https://sdwadlo.shop/products/${awaitedParams.id}`,
+        type: "product",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: product.name,
+        description: product.description,
+        images: [product.product_variant.length && product.product_variant[0].image_urls],
+      },
+    };
+  }
+}
 
 export default async function Page({
   params,

@@ -149,7 +149,7 @@ export async function saveCheckoutDetails(
   redirect(redirectUrl);
 }
 
-const BASE_URL = "https://sdwadlo.vercel.app";
+const BASE_URL = "https://sdwadlo.shop";
 const LOCAL_URL = "https://localhost:3000";
 
 const checkWHExists = async () => {
