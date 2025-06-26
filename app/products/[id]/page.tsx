@@ -3,20 +3,26 @@ import PreviewProduct from "@/components/products/preview-product";
 import IProduct from "@/models/product";
 import { supabase } from "@/utils/supabase";
 import { ChevronRight } from "lucide-react";
+import { Metadata } from "next";
 
 async function getProduct(id: number): Promise<IProduct | null> {
-  const { data: product } = await supabase
+  const { data: product, error } = await supabase
     .from("product")
     .select(
       `*, product_variant(
-      *,
-      size(*),
-      color(*),
-      product(*)
-    )`
+        *,
+        size(*),
+        color(*),
+        product(*)
+      )`
     )
     .eq("id", id)
     .single();
+
+  if (error) {
+    console.error("Error fetching product:", error);
+    return null;
+  }
 
   return product;
 }
@@ -25,29 +31,45 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
-}) {
+}): Promise<Metadata> {
   const awaitedParams = await params;
+
   const product = await getProduct(parseInt(awaitedParams.id));
 
-  if (product) {
+  if (!product) {
     return {
-      title: product.name,
-      description: product.description,
-      openGraph: {
-        title: product.name,
-        description: product.description,
-        images: [product.product_variant.length && product.product_variant[0].image_urls],
-        url: `https://sdwadlo.shop/products/${awaitedParams.id}`,
-        type: "product",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: product.name,
-        description: product.description,
-        images: [product.product_variant.length && product.product_variant[0].image_urls],
-      },
+      title: "Product not found",
+      description: "The requested product could not be found",
     };
   }
+
+  const firstImageUrl = product.product_variant?.[0]?.image_urls?.[0];
+
+  return {
+    title: product.name,
+    description: product.description,
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: firstImageUrl
+        ? [
+            {
+              url: firstImageUrl,
+              width: 1200,
+              height: 630,
+            },
+          ]
+        : [],
+      url: `https://sdwadlo.shop/products/${awaitedParams.id}`,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description: product.description,
+      images: firstImageUrl ? [firstImageUrl] : [],
+    },
+  };
 }
 
 export default async function Page({
