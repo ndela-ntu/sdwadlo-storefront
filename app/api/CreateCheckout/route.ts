@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.TEST_SECRET_KEY}`,
+        Authorization: `Bearer ${process.env.LIVE_SECRET_KEY}`,
       },
       body: JSON.stringify({
         amount,

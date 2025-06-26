@@ -4,7 +4,7 @@ export async function GET() {
   const getSubs = async () => {
     const response = await fetch("https://payments.yoco.com/api/webhooks", {
       method: "GET",
-      headers: { Authorization: `Bearer ${process.env.TEST_SECRET_KEY}` },
+      headers: { Authorization: `Bearer ${process.env.LIVE_SECRET_KEY}` },
     });
 
     const data = await response.json();

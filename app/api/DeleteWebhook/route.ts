@@ -9,7 +9,7 @@ export async function DELETE(req: NextRequest) {
       {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${process.env.TEST_SECRET_KEY}`,
+          Authorization: `Bearer ${process.env.LIVE_SECRET_KEY}`,
         },
       }
     );
