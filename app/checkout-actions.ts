@@ -127,6 +127,7 @@ export async function saveCheckoutDetails(
     const result = await checkWHExists();
     if (!result.hookExists) {
       const mode = await registerWebhook();
+      console.log(mode);
 
       if (mode === "test" || mode === "live") {
         const response = await handleCheckout(metadata);
@@ -141,7 +142,7 @@ export async function saveCheckoutDetails(
     console.log(result, redirectUrl);
   } catch (error: any) {
     return <CheckoutState>{
-      message: "An unexpected error occurred",
+      message: `An unexpected error occurred: ${error}`,
       errors: [],
     };
   }
@@ -158,11 +159,23 @@ const checkWHExists = async () => {
       method: "GET",
     });
 
-    const data = await response.json();
+    // Check if response is OK (status 200-299)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-    return data;
+    // Check if response has content
+    const text = await response.text();
+    if (!text.trim()) {
+      throw new Error("Empty API response");
+    }
+
+    // Parse JSON only if valid
+    const data = JSON.parse(text);
+    return data || { hookExists: false }; // Fallback if null
   } catch (error) {
-    throw error;
+    console.error("Failed to check webhook:", error);
+    return { hookExists: false }; // Fallback on error
   }
 };
 
