@@ -4,6 +4,8 @@ import ITag from "@/models/tag";
 import { supabase } from "@/utils/supabase";
 import { ChevronRight } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function ({
   params,
 }: {
